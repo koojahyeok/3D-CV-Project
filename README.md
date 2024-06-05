@@ -9,12 +9,11 @@
 
 ## Train
 use train.py:
-
-'''shell
-python tasks/nerfmm/train.py \
---base_dir='path/to/nerfmm_release/data' \
---scene_name='LLFF/fern'    
-'''
+    ```shell
+    python tasks/nerfmm/train.py \
+    --base_dir='path/to/nerfmm_release/data' \
+    --scene_name='LLFF/fern'    
+    ```    
     
 
   
