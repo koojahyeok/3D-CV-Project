@@ -1,5 +1,7 @@
 # 2024 SNU 3D CV project
-# Our code is base of nerfmm : https://github.com/ActiveVisionLab/nerfmm/tree/main
+
+Our code is base of nerfmm : https://github.com/ActiveVisionLab/nerfmm/tree/main
+
 # Have to do
 
 - Basic nerf
