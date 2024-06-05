@@ -2,7 +2,7 @@
 
 Our code is base of nerfmm : https://github.com/ActiveVisionLab/nerfmm/tree/main
 
-# Have to do
+# To Do..
 
 - Basic nerf
 - CFNerf, Nerf-four, mc-nerf? etc..
