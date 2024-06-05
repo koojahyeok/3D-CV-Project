@@ -3,7 +3,8 @@
 Our code is base of nerfmm : https://github.com/ActiveVisionLab/nerfmm/tree/main
 
 # Updated
-- 2024.06.05 model now can process Blender file format ( see /dataloader/with_blender.py & tasks/*.py )
+- 2024.06.05 Data generator(Blender format) updated ( see generator branch)
+- 2024.06.05 model now can process accept file format ( see /dataloader/with_blender.py & tasks/*.py )
 - 2024.06.06 Add nerf ( We have to test it) (see tasks/*.py )
 
 # To Do..
