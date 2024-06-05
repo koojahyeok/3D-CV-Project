@@ -50,6 +50,7 @@ def parse_args():
     parser.add_argument('--ckpt_dir', type=str, default='')
     # added
     parser.add_argument('--dtype', type=str, default='COLMAP', help="COLMAP vs BLENDER data type")
+    
     return parser.parse_args()
 
 

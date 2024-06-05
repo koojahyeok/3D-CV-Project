@@ -70,15 +70,60 @@ def parse_args():
     parser.add_argument('--ckpt_dir', type=str, default='')
     # added
     parser.add_argument('--dtype', type=str, default='COLMAP', help="COLMAP vs BLENDER data type")
+    parser.add_argument('--model', type=str, default='nerfmm', help='choose nerf model')
     return parser.parse_args()
 
 
-def test_one_epoch(H, W, focal_net, c2ws, near, far, model, my_devices, args):
+def test_one_epoch_nerfmm(H, W, focal_net, c2ws, near, far, model, my_devices, args):
     model.eval()
     focal_net.eval()
 
     fxfy = focal_net(0)
     ray_dir_cam = comp_ray_dir_cam_fxfy(H, W, fxfy[0], fxfy[1])
+    t_vals = torch.linspace(near, far, args.num_sample, device=my_devices)  # (N_sample,) sample position
+    N_img = c2ws.shape[0]
+
+    rendered_img_list = []
+    rendered_depth_list = []
+
+    for i in tqdm(range(N_img)):
+        c2w = c2ws[i].to(my_devices)  # (4, 4)
+
+        # split an image to rows when the input image resolution is high
+        rays_dir_cam_split_rows = ray_dir_cam.split(args.num_rows_eval_img, dim=0)
+        rendered_img = []
+        rendered_depth = []
+        for rays_dir_rows in rays_dir_cam_split_rows:
+            render_result = model_render_image(c2w, rays_dir_rows, t_vals, near, far, H, W, fxfy,
+                                               model, False, 0.0, args, rgb_act_fn=torch.sigmoid)
+            rgb_rendered_rows = render_result['rgb']  # (num_rows_eval_img, W, 3)
+            depth_map = render_result['depth_map']  # (num_rows_eval_img, W)
+
+            rendered_img.append(rgb_rendered_rows)
+            rendered_depth.append(depth_map)
+
+        # combine rows to an image
+        rendered_img = torch.cat(rendered_img, dim=0)  # (H, W, 3)
+        rendered_depth = torch.cat(rendered_depth, dim=0)  # (H, W)
+
+        # for vis
+        rendered_img_list.append(rendered_img)
+        rendered_depth_list.append(rendered_depth)
+
+    rendered_img_list = torch.stack(rendered_img_list)  # (N, H, W, 3)
+    rendered_depth_list = torch.stack(rendered_depth_list)  # (N, H, W)
+
+    result = {
+        'imgs': rendered_img_list,
+        'depths': rendered_depth_list,
+    }
+    return result
+
+def test_one_epoch_nerf(H, W, focal, ray_dir_cam, c2ws, near, far, model, my_devices, args):
+    model.eval()
+
+    fxfy = focal
+    ray_dir_cam = ray_dir_cam.to(my_devices)
     t_vals = torch.linspace(near, far, args.num_sample, device=my_devices)  # (N_sample,) sample position
     N_img = c2ws.shape[0]
 
@@ -175,29 +220,32 @@ def main(args):
         model = model.to(device=my_devices)
     model = load_ckpt_to_net(os.path.join(args.ckpt_dir, 'latest_nerf.pth'), model, map_location=my_devices)
 
-    if args.init_focal_colmap:
-        focal_net = LearnFocal(H, W, args.learn_focal, args.fx_only, order=args.focal_order, init_focal=colmap_focal)
-    else:
-        focal_net = LearnFocal(H, W, args.learn_focal, args.fx_only, order=args.focal_order)
-    if args.multi_gpu:
-        focal_net = torch.nn.DataParallel(focal_net).to(device=my_devices)
-    else:
-        focal_net = focal_net.to(device=my_devices)
-    # do not load learned focal if we use colmap focal
-    if not args.init_focal_colmap:
-        focal_net = load_ckpt_to_net(os.path.join(args.ckpt_dir, 'latest_focal.pth'), focal_net, map_location=my_devices)
-    fxfy = focal_net(0)
-    print('COLMAP focal: {0:.2f}, learned fx: {1:.2f}, fy: {2:.2f}'.format(colmap_focal, fxfy[0].item(), fxfy[1].item()))
+    if args.model == 'nerfmm':
+        if args.init_focal_colmap:
+            focal_net = LearnFocal(H, W, args.learn_focal, args.fx_only, order=args.focal_order, init_focal=colmap_focal)
+        else:
+            focal_net = LearnFocal(H, W, args.learn_focal, args.fx_only, order=args.focal_order)
+        if args.multi_gpu:
+            focal_net = torch.nn.DataParallel(focal_net).to(device=my_devices)
+        else:
+            focal_net = focal_net.to(device=my_devices)
+        # do not load learned focal if we use colmap focal
+        if not args.init_focal_colmap:
+            focal_net = load_ckpt_to_net(os.path.join(args.ckpt_dir, 'latest_focal.pth'), focal_net, map_location=my_devices)
+        fxfy = focal_net(0)
+        print('COLMAP focal: {0:.2f}, learned fx: {1:.2f}, fy: {2:.2f}'.format(colmap_focal, fxfy[0].item(), fxfy[1].item()))
 
-    pose_param_net = LearnPose(scene_train.N_imgs, args.learn_R, args.learn_t, None)
-    if args.multi_gpu:
-        pose_param_net = torch.nn.DataParallel(pose_param_net).to(device=my_devices)
-    else:
-        pose_param_net = pose_param_net.to(device=my_devices)
-    pose_param_net = load_ckpt_to_net(os.path.join(args.ckpt_dir, 'latest_pose.pth'), pose_param_net, map_location=my_devices)
+        pose_param_net = LearnPose(scene_train.N_imgs, args.learn_R, args.learn_t, None)
+        if args.multi_gpu:
+            pose_param_net = torch.nn.DataParallel(pose_param_net).to(device=my_devices)
+        else:
+            pose_param_net = pose_param_net.to(device=my_devices)
+        pose_param_net = load_ckpt_to_net(os.path.join(args.ckpt_dir, 'latest_pose.pth'), pose_param_net, map_location=my_devices)
 
-    learned_poses = torch.stack([pose_param_net(i) for i in range(scene_train.N_imgs)])
+        learned_poses = torch.stack([pose_param_net(i) for i in range(scene_train.N_imgs)])
 
+    elif args.model == 'nerf':
+        learned_poses = torch.stack([scene_train.c2ws[i].to(my_devices) for i in range(scene_train.N_imgs)])
     '''Generate camera traj'''
     # This spiral camera traj code is modified from https://github.com/kwea123/nerf_pl.
     # hardcoded, this is numerically close to the formula
@@ -212,7 +260,11 @@ def main(args):
     c2ws = convert3x4_4x4(c2ws)  # (N, 4, 4)
 
     '''Render'''
-    result = test_one_epoch(H, W, focal_net, c2ws, near, far, model, my_devices, args)
+    if args.model == 'nerfmm':
+        result = test_one_epoch_nerfmm(H, W, focal_net, c2ws, near, far, model, my_devices, args)
+    elif args.model == 'nerf':
+        result = test_one_epoch_nerfmm(H, W, scene_train.focal, scene_train.ray_dir_cam, c2ws, near, far, model, my_devices, args)
+
     imgs = result['imgs']
     depths = result['depths']
 

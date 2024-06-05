@@ -85,10 +85,11 @@ def parse_args():
 
     # added
     parser.add_argument('--dtype', type=str, default='COLMAP', help="COLMAP vs BLENDER data type")
+    parser.add_argument('--model', type=str, default='nerfmm', help='choose nerf model')
     return parser.parse_args()
 
 
-def eval_one_epoch_img(scene_eval, model, focal_net, eval_pose_param_net, my_devices, args, logger):
+def eval_one_epoch_img_nerfmm(scene_eval, model, focal_net, eval_pose_param_net, my_devices, args, logger):
     model.eval()
     focal_net.eval()
     eval_pose_param_net.eval()
@@ -174,8 +175,92 @@ def eval_one_epoch_img(scene_eval, model, focal_net, eval_pose_param_net, my_dev
     }
     return result
 
+def eval_one_epoch_img_nerf(scene_eval, model, my_devices, args, logger):
+    model.eval()
 
-def opt_eval_pose_one_epoch(model, focal_net, eval_pose_param_net, scene_eval, optimizer_eval_pose, my_devices):
+    # init lpips loss.
+    lpips_vgg_fn = lpips_lib.LPIPS(net='vgg').to(my_devices)
+
+    # load learned intrinsic and extrinsic
+    fxfy = scene_eval.focal  # (2, )
+
+    ray_dir_cam = scene_eval.ray_dir_cam.to(my_devices)
+    t_vals = torch.linspace(scene_eval.near, scene_eval.far, args.num_sample, device=my_devices)  # (N_sample,) sample position
+    N_img = scene_eval.N_imgs
+
+    rendered_img_list = []
+    rendered_depth_list = []
+
+    eval_mse_list = []
+    eval_psnr_list = []
+    eval_ssim_list = []
+    eval_lpips_list = []
+
+    for i in tqdm(range(N_img)):
+        img = scene_eval.imgs[i].to(my_devices)
+
+        # if eval training set, this contains exact learned poses, if eval val set, this contains optimised eval poses.
+        c2w = scene_eval.c2ws[i].to(my_devices)  # (4, 4)
+
+        # split an image to rows when the input image resolution is high
+        rays_dir_cam_split_rows = ray_dir_cam.split(args.num_rows_eval_img, dim=0)
+        rendered_img = []
+        rendered_depth = []
+        for rays_dir_rows in rays_dir_cam_split_rows:
+            render_result = model_render_image(c2w, rays_dir_rows, t_vals, scene_eval.near, scene_eval.far,
+                                               scene_eval.H, scene_eval.W, fxfy, model, False,
+                                               0.0, args, rgb_act_fn=torch.sigmoid)
+            rgb_rendered_rows = render_result['rgb']  # (num_rows_eval_img, W, 3)
+            depth_map = render_result['depth_map']  # (num_rows_eval_img, W)
+
+            rendered_img.append(rgb_rendered_rows)
+            rendered_depth.append(depth_map)
+
+        # combine rows to an image
+        rendered_img = torch.cat(rendered_img, dim=0)  # (H, W, 3)
+        rendered_depth = torch.cat(rendered_depth, dim=0)  # (H, W)
+
+        # mse for the entire image
+        mse = F.mse_loss(rendered_img, img).item()
+        psnr = mse2psnr(mse)
+        ssim = pytorch_ssim.ssim(rendered_img.permute(2, 0, 1).unsqueeze(0), img.permute(2, 0, 1).unsqueeze(0)).item()
+        lpips_loss = lpips_vgg_fn(rendered_img.permute(2, 0, 1).unsqueeze(0).contiguous(),
+                                  img.permute(2, 0, 1).unsqueeze(0).contiguous(), normalize=True).item()
+
+        eval_mse_list.append(mse)
+        eval_psnr_list.append(psnr)
+        eval_ssim_list.append(ssim)
+        eval_lpips_list.append(lpips_loss)
+
+        tqdm.write('{0:4d} img: PSNR: {1:.2f}, SSIM: {2:.2f}, LPIPS {3:.2f}'.format(i, psnr, ssim, lpips_loss))
+        logger.info('{0:4d} img: PSNR: {1:.2f}, SSIM: {2:.2f}, LPIPS {3:.2f}'.format(i, psnr, ssim, lpips_loss))
+
+        # for vis
+        rendered_img_list.append(rendered_img)
+        rendered_depth_list.append(rendered_depth)
+
+    mean_mse = np.mean(eval_mse_list)
+    mean_psnr = np.mean(eval_psnr_list)
+    mean_ssim = np.mean(eval_ssim_list)
+    mean_lpips = np.mean(eval_lpips_list)
+    print('--------------------------')
+    print('Mean MSE: {0:.2f}, PSNR: {1:.2f}, SSIM: {2:.2f}, LPIPS {3:.2f}'.format(mean_mse, mean_psnr,
+                                                                                  mean_ssim, mean_lpips))
+    logger.info('--------------------------')
+    logger.info('Mean MSE: {0:.2f}, PSNR: {1:.2f}, SSIM: {2:.2f}, LPIPS {3:.2f}'.format(mean_mse, mean_psnr,
+                                                                                        mean_ssim, mean_lpips))
+
+    rendered_img_list = torch.stack(rendered_img_list)  # (N, H, W, 3)
+    rendered_depth_list = torch.stack(rendered_depth_list)  # (N, H, W, 3)
+
+    result = {
+        'imgs': rendered_img_list,
+        'depths': rendered_depth_list,
+    }
+    return result
+
+
+def opt_eval_pose_one_epoch_nerfmm(model, focal_net, eval_pose_param_net, scene_eval, optimizer_eval_pose, my_devices):
     model.eval()
     focal_net.eval()
     eval_pose_param_net.train()
@@ -218,6 +303,44 @@ def opt_eval_pose_one_epoch(model, focal_net, eval_pose_param_net, scene_eval, o
 
     return mean_losses
 
+def opt_eval_pose_one_epoch_nerf(model, scene_eval, my_devices):
+    model.eval()
+
+    t_vals = torch.linspace(scene_eval.near, scene_eval.far, args.num_sample,
+                            device=my_devices)  # (N_sample,) sample position
+    N_img, H, W = scene_eval.N_imgs, scene_eval.H, scene_eval.W
+
+    L2_loss_epoch = []
+
+    for i in range(N_img):
+        fxfy = scene_eval.focal
+        ray_dir_cam = scene_eval.ray_dir_cam.to(my_devices)
+        img = scene_eval.imgs[i].to(my_devices)  # (H, W, 4)
+        c2w = scene_eval.c2ws[i].to(my_devices)  # (4, 4)
+
+        # sample pixel on an image and their rays for training.
+        r_id = torch.randperm(H, device=my_devices)[:args.train_rand_rows]  # (N_select_rows)
+        c_id = torch.randperm(W, device=my_devices)[:args.train_rand_cols]  # (N_select_cols)
+        ray_selected_cam = ray_dir_cam[r_id][:, c_id]  # (N_select_rows, N_select_cols, 3)
+        img_selected = img[r_id][:, c_id]  # (N_select_rows, N_select_cols, 3)
+
+        # render an image using selected rays, pose, sample intervals, and the network
+        render_result = model_render_image(c2w, ray_selected_cam, t_vals, scene_eval.near, scene_eval.far,
+                                           scene_eval.H, scene_eval.W, fxfy,
+                                           model, True, 0.0, args, torch.sigmoid)  # (N_select_rows, N_select_cols, 3)
+        rgb_rendered = render_result['rgb']  # (N_select_rows, N_select_cols, 3)
+
+        L2_loss = F.mse_loss(rgb_rendered, img_selected)  # loss for one image
+        L2_loss.backward()
+
+        L2_loss_epoch.append(L2_loss.item())
+
+    L2_loss_mean = np.mean(L2_loss_epoch)
+    mean_losses = {
+        'L2': L2_loss_mean,
+    }
+
+    return mean_losses
 
 def main(args):
     my_devices = torch.device('cuda:' + str(args.gpu_id))
@@ -304,66 +427,71 @@ def main(args):
         model = model.to(device=my_devices)
     model = load_ckpt_to_net(os.path.join(args.ckpt_dir, 'latest_nerf.pth'), model, map_location=my_devices)
 
-    if args.init_focal_from == 'colmap':
-        focal_net = LearnFocal(scene_train.H, scene_train.W, args.learn_focal, args.fx_only, order=args.focal_order, init_focal=scene_train.focal)
-    else:
-        focal_net = LearnFocal(scene_train.H, scene_train.W, args.learn_focal, args.fx_only, order=args.focal_order)
-    if args.multi_gpu:
-        focal_net = torch.nn.DataParallel(focal_net).to(device=my_devices)
-    else:
-        focal_net = focal_net.to(device=my_devices)
-    # load learned focal if we did not init focal with something
-    if args.init_focal_from == 'none':
-        focal_net = load_ckpt_to_net(os.path.join(args.ckpt_dir, 'latest_focal.pth'), focal_net, map_location=my_devices)
-    fxfy = focal_net(0)
-    if 'blender/' in args.scene_name:
-        print('GT: fx {0:.2f} fy {1:.2f}, learned: fx {2:.2f}, fy {3:.2f}, COLMAP: {4:.2f}'.format(
-            scene_train.gt_fx, scene_train.gt_fy, fxfy[0].item(), fxfy[1].item(), scene_train.focal))
-    else:
-        print('COLMAP: {0:.2f}, learned: fx {1:.2f}, fy {2:.2f}, '.format(
-            scene_train.focal, fxfy[0].item(), fxfy[1].item()))
-
-    if args.init_pose_from == 'colmap':
-        learned_pose_param_net = LearnPose(scene_train.N_imgs, args.learn_R, args.learn_t, scene_train.c2ws)
-    else:
-        learned_pose_param_net = LearnPose(scene_train.N_imgs, args.learn_R, args.learn_t, None)
-    if args.multi_gpu:
-        learned_pose_param_net = torch.nn.DataParallel(learned_pose_param_net).to(device=my_devices)
-    else:
-        learned_pose_param_net = learned_pose_param_net.to(device=my_devices)
-    learned_pose_param_net = load_ckpt_to_net(os.path.join(args.ckpt_dir, 'latest_pose.pth'), learned_pose_param_net,
-                                              map_location=my_devices)
-
-    # We optimise poses for validation images while freezing learned focal length and trained nerf model.
-    # This step is only required when we compute evaluation metrics, as the space of learned poses
-    # is different from the space of colmap poses.
-    if args.type_to_eval == 'train':
-        eval_pose_param_net = learned_pose_param_net
-    else:
-        with torch.no_grad():
-            # compuate a scale between two learned traj and colmap traj
-            init_c2ws = scene_eval.c2ws.to(my_devices)
-            learned_c2ws_train = torch.stack([learned_pose_param_net(i) for i in range(scene_train.N_imgs)])  # (N, 4, 4)
-            colmap_c2ws_train = scene_train.c2ws  # (N, 4, 4)
-            init_c2ws, scale_colmap2est = align_scale_c2b_use_a2b(colmap_c2ws_train, learned_c2ws_train, init_c2ws)
-
-        eval_pose_param_net = LearnPose(scene_eval.N_imgs, args.opt_eval_R, args.opt_eval_t, init_c2ws)
-        if args.multi_gpu:
-            eval_pose_param_net = torch.nn.DataParallel(eval_pose_param_net).to(device=my_devices)
+    if args.model == 'nerfmm':
+        if args.init_focal_from == 'colmap':
+            focal_net = LearnFocal(scene_train.H, scene_train.W, args.learn_focal, args.fx_only, order=args.focal_order, init_focal=scene_train.focal)
         else:
-            eval_pose_param_net = eval_pose_param_net.to(device=my_devices)
+            focal_net = LearnFocal(scene_train.H, scene_train.W, args.learn_focal, args.fx_only, order=args.focal_order)
+        if args.multi_gpu:
+            focal_net = torch.nn.DataParallel(focal_net).to(device=my_devices)
+        else:
+            focal_net = focal_net.to(device=my_devices)
+        # load learned focal if we did not init focal with something
+        if args.init_focal_from == 'none':
+            focal_net = load_ckpt_to_net(os.path.join(args.ckpt_dir, 'latest_focal.pth'), focal_net, map_location=my_devices)
+        fxfy = focal_net(0)
+        if 'blender/' in args.scene_name:
+            print('GT: fx {0:.2f} fy {1:.2f}, learned: fx {2:.2f}, fy {3:.2f}, COLMAP: {4:.2f}'.format(
+                scene_train.gt_fx, scene_train.gt_fy, fxfy[0].item(), fxfy[1].item(), scene_train.focal))
+        else:
+            print('COLMAP: {0:.2f}, learned: fx {1:.2f}, fy {2:.2f}, '.format(
+                scene_train.focal, fxfy[0].item(), fxfy[1].item()))
 
-    '''Set Optimiser'''
-    optimizer_eval_pose = torch.optim.Adam(eval_pose_param_net.parameters(), lr=args.opt_eval_lr)
-    scheduler_eval_pose = torch.optim.lr_scheduler.MultiStepLR(optimizer_eval_pose,
-                                                               milestones=args.eval_pose_milestones,
-                                                               gamma=args.eval_pose_lr_gamma)
+        if args.init_pose_from == 'colmap':
+            learned_pose_param_net = LearnPose(scene_train.N_imgs, args.learn_R, args.learn_t, scene_train.c2ws)
+        else:
+            learned_pose_param_net = LearnPose(scene_train.N_imgs, args.learn_R, args.learn_t, None)
+        if args.multi_gpu:
+            learned_pose_param_net = torch.nn.DataParallel(learned_pose_param_net).to(device=my_devices)
+        else:
+            learned_pose_param_net = learned_pose_param_net.to(device=my_devices)
+        learned_pose_param_net = load_ckpt_to_net(os.path.join(args.ckpt_dir, 'latest_pose.pth'), learned_pose_param_net,
+                                                map_location=my_devices)
+
+        # We optimise poses for validation images while freezing learned focal length and trained nerf model.
+        # This step is only required when we compute evaluation metrics, as the space of learned poses
+        # is different from the space of colmap poses.
+        if args.type_to_eval == 'train':
+            eval_pose_param_net = learned_pose_param_net
+        else:
+            with torch.no_grad():
+                # compuate a scale between two learned traj and colmap traj
+                init_c2ws = scene_eval.c2ws.to(my_devices)
+                learned_c2ws_train = torch.stack([learned_pose_param_net(i) for i in range(scene_train.N_imgs)])  # (N, 4, 4)
+                colmap_c2ws_train = scene_train.c2ws  # (N, 4, 4)
+                init_c2ws, scale_colmap2est = align_scale_c2b_use_a2b(colmap_c2ws_train, learned_c2ws_train, init_c2ws)
+
+            eval_pose_param_net = LearnPose(scene_eval.N_imgs, args.opt_eval_R, args.opt_eval_t, init_c2ws)
+            if args.multi_gpu:
+                eval_pose_param_net = torch.nn.DataParallel(eval_pose_param_net).to(device=my_devices)
+            else:
+                eval_pose_param_net = eval_pose_param_net.to(device=my_devices)
+
+        '''Set Optimiser'''
+        optimizer_eval_pose = torch.optim.Adam(eval_pose_param_net.parameters(), lr=args.opt_eval_lr)
+        scheduler_eval_pose = torch.optim.lr_scheduler.MultiStepLR(optimizer_eval_pose,
+                                                                milestones=args.eval_pose_milestones,
+                                                                gamma=args.eval_pose_lr_gamma)
 
     '''Optimise eval poses'''
     if args.type_to_eval != 'train':
         for epoch_i in tqdm(range(args.opt_pose_epoch), desc='optimising eval'):
-            mean_losses = opt_eval_pose_one_epoch(model, focal_net, eval_pose_param_net, scene_eval, optimizer_eval_pose,
-                                                  my_devices)
+            if args.model == 'nerfmm':
+                mean_losses = opt_eval_pose_one_epoch_nerfmm(model, focal_net, eval_pose_param_net, scene_eval, optimizer_eval_pose,
+                                                      my_devices)
+            elif args.model == 'nerf':
+                mean_losses = opt_eval_pose_one_epoch_nerf(model, scene_eval, optimizer_eval_pose, my_devices)
+
             opt_L2_loss = mean_losses['L2']
             opt_pose_psnr = mse2psnr(opt_L2_loss)
             scheduler_eval_pose.step()
@@ -384,7 +512,10 @@ def main(args):
         print('-------------------------------------------------')
 
         '''Final Render'''
-        result = eval_one_epoch_img(scene_eval, model, focal_net, eval_pose_param_net, my_devices, args, logger)
+        if args.model == 'nerfmm':
+            result = eval_one_epoch_img_nerfmm(scene_eval, model, focal_net, eval_pose_param_net, my_devices, args, logger)
+        elif args.model == 'nerf':
+            result = eval_one_epoch_img_nerf(scene_eval, model, my_devices, args, logger)
         imgs = result['imgs']
         depths = result['depths']
 
