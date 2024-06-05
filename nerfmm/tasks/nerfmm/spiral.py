@@ -14,6 +14,7 @@ import cv2
 sys.path.append(os.path.join(sys.path[0], '../..'))
 
 from dataloader.with_colmap import DataLoaderWithCOLMAP
+from dataloader.with_blender import DataLoaderWithBLENDER
 from utils.training_utils import set_randomness, load_ckpt_to_net
 from utils.pose_utils import create_spiral_poses
 from utils.comp_ray_dir import comp_ray_dir_cam_fxfy
@@ -67,6 +68,8 @@ def parse_args():
     parser.add_argument('--train_skip', type=int, default=1, help='skip every this number of imgs')
 
     parser.add_argument('--ckpt_dir', type=str, default='')
+    # added
+    parser.add_argument('--dtype', type=str, default='COLMAP', help="COLMAP vs BLENDER data type")
     return parser.parse_args()
 
 
@@ -130,14 +133,26 @@ def main(args):
     video_out_dir.mkdir(parents=True, exist_ok=True)
 
     '''Scene Meta'''
-    scene_train = DataLoaderWithCOLMAP(base_dir=args.base_dir,
-                                       scene_name=args.scene_name,
-                                       data_type='train',
-                                       res_ratio=args.resize_ratio,
-                                       num_img_to_load=args.train_img_num,
-                                       skip=args.train_skip,
-                                       use_ndc=args.use_ndc,
-                                       load_img=False)
+    
+    if  args.dtype == 'COLMAP':
+        scene_train = DataLoaderWithCOLMAP(base_dir=args.base_dir,
+                                        scene_name=args.scene_name,
+                                        data_type='train',
+                                        res_ratio=args.resize_ratio,
+                                        num_img_to_load=args.train_img_num,
+                                        skip=args.train_skip,
+                                        use_ndc=args.use_ndc,
+                                        load_img=False)  
+    else:
+        scene_train = DataLoaderWithBLENDER(base_dir=args.base_dir,
+                                        scene_name=args.scene_name,
+                                        data_type='train',
+                                        res_ratio=args.resize_ratio,
+                                        num_img_to_load=args.train_img_num,
+                                        skip=args.train_skip,
+                                        use_ndc=args.use_ndc,
+                                        load_img=False)
+
 
     H, W = scene_train.H, scene_train.W
     colmap_focal = scene_train.focal

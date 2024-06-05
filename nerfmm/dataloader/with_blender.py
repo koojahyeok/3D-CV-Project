@@ -5,6 +5,8 @@ import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
 import imageio
+import json
+import pickle
 
 from utils.comp_ray_dir import comp_ray_dir_cam
 from utils.pose_utils import center_poses
@@ -81,18 +83,37 @@ def read_meta(in_dir, use_ndc):
     Read the poses_bounds.npy file produced by LLFF imgs2poses.py.
     This function is modified from https://github.com/kwea123/nerf_pl.
     """
-    poses_bounds = np.load(os.path.join(in_dir, 'poses_bounds.npy'))  # (N_images, 17)
+    
+    img_cnt = len(os.listdir(os.path.join(in_dir, 'images')))
+    print(f'Number of image : {img_cnt}')
 
-    c2ws = poses_bounds[:, :15].reshape(-1, 3, 5)  # (N_images, 3, 5)
-    bounds = poses_bounds[:, -2:]  # (N_images, 2)
-    H, W, focal = c2ws[0, :, -1]
+    # get extrinsic parameter
+    c2ws = np.zeros((img_cnt, 3, 4))
+    for i in range(img_cnt):
+        c2ws[i] = np.load(os.path.join(in_dir, '{0:03d}_rt.npy'.format(i)))
 
-    # correct c2ws: original c2ws has rotation in form "down right back", change to "right up back".
-    # See https://github.com/bmild/nerf/issues/34
-    c2ws = np.concatenate([c2ws[..., 1:2], -c2ws[..., :1], c2ws[..., 2:4]], -1)
+    # get intrinsic parameter
+    K = np.zeros((img_cnt, 3, 3))
+    for i in range(img_cnt):
+        K[i] = np.load(os.path.join(in_dir, '{0:03d}_k.npy'.format(i)))
 
-    # (N_images, 3, 4), (4, 4)
-    c2ws, pose_avg = center_poses(c2ws)  # pose_avg @ c2ws -> centred c2ws
+    # we need whole size      
+    H = K[0, 1, 2] * 2              # scalar
+    W = K[0, 0, 2] * 2              # scalar
+
+    focal = np.mean(K[:, 0, 0])              # (N, 1)
+
+    # get depth (near, far)
+    bounds = np.zeros((img_cnt, 2)) #(N, 2)
+    for i in range(img_cnt):
+        with open(os.path.join(in_dir, '{0:03d}.pkl'.format(i)), 'rb') as f:
+            loaded = pickle.load(f)
+        near = loaded['near']
+        far = loaded['far']
+        bounds[i] = np.array([near, far])
+
+    # I dont know we have to do this code.... experimentely go
+    c2ws, pose_avg = center_poses(c2ws)             # pose_avg @ c2ws -> centered c2ws
 
     if use_ndc:
         # correct scale so that the nearest depth is at a little more than 1.0
@@ -110,13 +131,13 @@ def read_meta(in_dir, use_ndc):
         'bounds': bounds,   # (N_images, 2) np
         'H': int(H),        # scalar
         'W': int(W),        # scalar
-        'focal': focal,     # scalar
+        'focal': focal,     # (N, 1) np
         'pose_avg': pose_avg,  # (4, 4) np
     }
     return results
 
 
-class DataLoaderWithCOLMAP:
+class DataLoaderWithBLENDER:
     """
     Most useful fields:
         self.c2ws:          (N_imgs, 4, 4)      torch.float32
@@ -154,7 +175,7 @@ class DataLoaderWithCOLMAP:
         self.c2ws = meta['c2ws']  # (N, 4, 4) all camera pose
         self.H = meta['H']
         self.W = meta['W']
-        self.focal = float(meta['focal'])
+        self.focal = meta['focal']
         self.total_N_imgs = self.c2ws.shape[0]
 
         if self.res_ratio > 1:
@@ -185,7 +206,7 @@ class DataLoaderWithCOLMAP:
 if __name__ == '__main__':
     scene_name = 'LLFF/fern'
     use_ndc = True
-    scene = DataLoaderWithCOLMAP(base_dir='/your/data/path',
+    scene = DataLoaderWithBLENDER(base_dir='/your/data/path',
                                  scene_name=scene_name,
                                  data_type='train',
                                  res_ratio=8,

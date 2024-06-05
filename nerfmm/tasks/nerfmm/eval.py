@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.join(sys.path[0], '../..'))
 
 from dataloader.with_colmap import DataLoaderWithCOLMAP
+from dataloader.with_blender import DataLoaderWithBLENDER
 from utils.training_utils import set_randomness, mse2psnr, load_ckpt_to_net
 from utils.comp_ray_dir import comp_ray_dir_cam_fxfy
 from third_party import pytorch_ssim
@@ -81,6 +82,9 @@ def parse_args():
     parser.add_argument('--true_rand', type=bool, default=False)
 
     parser.add_argument('--ckpt_dir', type=str, default='')
+
+    # added
+    parser.add_argument('--dtype', type=str, default='COLMAP', help="COLMAP vs BLENDER data type")
     return parser.parse_args()
 
 
@@ -242,14 +246,24 @@ def main(args):
     writer = SummaryWriter(log_dir=str(eval_pose_out_dir))
 
     '''Load data'''
-    scene_train = DataLoaderWithCOLMAP(base_dir=args.base_dir,
-                                       scene_name=args.scene_name,
-                                       data_type='train',
-                                       res_ratio=args.resize_ratio,
-                                       num_img_to_load=args.train_img_num,
-                                       skip=args.train_skip,
-                                       use_ndc=args.use_ndc,
-                                       load_img=args.type_to_eval == 'train')  # only load imgs if eval train set.
+    if  args.dtype == 'COLMAP':
+        scene_train = DataLoaderWithCOLMAP(base_dir=args.base_dir,
+                                        scene_name=args.scene_name,
+                                        data_type='train',
+                                        res_ratio=args.resize_ratio,
+                                        num_img_to_load=args.train_img_num,
+                                        skip=args.train_skip,
+                                        use_ndc=args.use_ndc,
+                                        load_img=args.type_to_eval == 'train')  # only load imgs if eval train set.
+    else:
+        scene_train = DataLoaderWithBLENDER(base_dir=args.base_dir,
+                                        scene_name=args.scene_name,
+                                        data_type='train',
+                                        res_ratio=args.resize_ratio,
+                                        num_img_to_load=args.train_img_num,
+                                        skip=args.train_skip,
+                                        use_ndc=args.use_ndc,
+                                        load_img=args.type_to_eval == 'train')
 
 
     print('Intrinsic: H: {0:4d}, W: {1:4d}, GT focal {2:.2f}.'.format(scene_train.H, scene_train.W, scene_train.focal))
@@ -257,13 +271,23 @@ def main(args):
     if args.type_to_eval == 'train':
         scene_eval = scene_train
     else:
-        scene_eval = DataLoaderWithCOLMAP(base_dir=args.base_dir,
-                                          scene_name=args.scene_name,
-                                          data_type='val',
-                                          res_ratio=args.resize_ratio,
-                                          num_img_to_load=args.eval_img_num,
-                                          skip=args.eval_skip,
-                                          use_ndc=args.use_ndc)
+        if args.dtype == 'COLMAP':
+            scene_eval = DataLoaderWithCOLMAP(base_dir=args.base_dir,
+                                            scene_name=args.scene_name,
+                                            data_type='val',
+                                            res_ratio=args.resize_ratio,
+                                            num_img_to_load=args.eval_img_num,
+                                            skip=args.eval_skip,
+                                            use_ndc=args.use_ndc)
+        else:
+            scene_eval = DataLoaderWithBLENDER(base_dir=args.base_dir,
+                                            scene_name=args.scene_name,
+                                            data_type='val',
+                                            res_ratio=args.resize_ratio,
+                                            num_img_to_load=args.eval_img_num,
+                                            skip=args.eval_skip,
+                                            use_ndc=args.use_ndc)
+
 
 
     '''Model Loading'''

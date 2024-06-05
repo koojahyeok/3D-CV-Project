@@ -12,6 +12,7 @@ import torch
 import numpy as np
 
 from dataloader.with_colmap import DataLoaderWithCOLMAP
+from dataloader.with_blender import DataLoaderWithBLENDER
 from utils.training_utils import set_randomness, load_ckpt_to_net
 from utils.align_traj import align_ate_c2b_use_a2b, pts_dist_max
 from utils.comp_ate import compute_ate
@@ -47,6 +48,8 @@ def parse_args():
     parser.add_argument('--true_rand', type=bool, default=False)
 
     parser.add_argument('--ckpt_dir', type=str, default='')
+    # added
+    parser.add_argument('--dtype', type=str, default='COLMAP', help="COLMAP vs BLENDER data type")
     return parser.parse_args()
 
 
@@ -58,14 +61,25 @@ def main(args):
     pose_out_dir.mkdir(parents=True, exist_ok=True)
 
     '''Get COLMAP poses'''
-    scene_train = DataLoaderWithCOLMAP(base_dir=args.base_dir,
-                                       scene_name=args.scene_name,
-                                       data_type='train',
-                                       res_ratio=args.resize_ratio,
-                                       num_img_to_load=args.train_img_num,
-                                       skip=args.train_skip,
-                                       use_ndc=True,
-                                       load_img=False)
+    if args.dtype == 'COLMAP':
+        scene_train = DataLoaderWithCOLMAP(base_dir=args.base_dir,
+                                        scene_name=args.scene_name,
+                                        data_type='train',
+                                        res_ratio=args.resize_ratio,
+                                        num_img_to_load=args.train_img_num,
+                                        skip=args.train_skip,
+                                        use_ndc=True,
+                                        load_img=False)
+    else:
+        scene_train = DataLoaderWithBLENDER(base_dir=args.base_dir,
+                                        scene_name=args.scene_name,
+                                        data_type='train',
+                                        res_ratio=args.resize_ratio,
+                                        num_img_to_load=args.train_img_num,
+                                        skip=args.train_skip,
+                                        use_ndc=True,
+                                        load_img=False)
+
 
     # scale colmap poses to unit sphere
     ts_colmap = scene_train.c2ws[:, :3, 3]  # (N, 3)

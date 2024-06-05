@@ -15,6 +15,7 @@ from tqdm import tqdm
 sys.path.append(os.path.join(sys.path[0], '../..'))
 
 from dataloader.with_colmap import DataLoaderWithCOLMAP
+from dataloader.with_blender import DataLoaderWithBLENDER
 from utils.training_utils import set_randomness, mse2psnr, save_checkpoint
 from utils.pos_enc import encode_position
 from utils.volume_op import volume_sampling_ndc, volume_rendering
@@ -90,6 +91,9 @@ def parse_args():
     parser.add_argument('--true_rand', type=bool, default=False)
 
     parser.add_argument('--alias', type=str, default='', help="experiments alias")
+
+    # which i added
+    parser.add_argument('--dtype', type=str, default='COLMAP', help="COLMAP vs BLENDER data type")
     return parser.parse_args()
 
 
@@ -326,13 +330,23 @@ def main(args):
     writer = SummaryWriter(log_dir=str(experiment_dir))
 
     '''Data Loading'''
-    scene_train = DataLoaderWithCOLMAP(base_dir=args.base_dir,
-                                       scene_name=args.scene_name,
-                                       data_type='train',
-                                       res_ratio=args.resize_ratio,
-                                       num_img_to_load=args.train_img_num,
-                                       skip=args.train_skip,
-                                       use_ndc=args.use_ndc)
+    if args.dtype ==  'COLMAP':
+        scene_train = DataLoaderWithCOLMAP(base_dir=args.base_dir,
+                                        scene_name=args.scene_name,
+                                        data_type='train',
+                                        res_ratio=args.resize_ratio,
+                                        num_img_to_load=args.train_img_num,
+                                        skip=args.train_skip,
+                                        use_ndc=args.use_ndc)
+    else:
+        scene_train = DataLoaderWithBLENDER(base_dir=args.base_dir,
+                                        scene_name=args.scene_name,
+                                        data_type='train',
+                                        res_ratio=args.resize_ratio,
+                                        num_img_to_load=args.train_img_num,
+                                        skip=args.train_skip,
+                                        use_ndc=args.use_ndc)
+        
 
     # The COLMAP eval poses are not in the same camera space that we learned so we can only check NVS
     # with a 4x4 identity pose.
