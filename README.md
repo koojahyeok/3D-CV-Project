@@ -2,9 +2,12 @@
 
 Our code is base of nerfmm : https://github.com/ActiveVisionLab/nerfmm/tree/main
 
+# Updated
+- 2024.06.05 model now can process Blender file format ( see /dataloader/with_blender.py & tasks/*.py )
+- 2024.06.06 Add nerf ( We have to test it) (see tasks/*.py )
+
 # To Do..
 
-- Basic nerf
 - CFNerf, Nerf-four, mc-nerf? etc..
 - Data
 - Dust3r
@@ -17,7 +20,8 @@ use train.py
     python tasks/nerfmm/train.py \
     --base_dir='path of data directory' \
     --scene_name='choodse scene' \
-    --dtype='data formate type'
+    --dtype='data formate type' \
+    --model='model name'
     
 ## Evaluation
 ### Compute image quality matrix
@@ -28,7 +32,8 @@ use train.py
     --base_dir='path of data directory' \
     --scene_name='choodse scene' \
     --dtype='data formate type' \
-    --ckpt_dir='path of checkpoints directory'
+    --ckpt_dir='path of checkpoints directory' \
+    --model='model name'
     ```
 
 ### Rendering novel vies
@@ -39,7 +44,8 @@ use train.py
     --base_dir='path of data directory' \
     --scene_name='choodse scene' \
     --dtype='data formate type' \
-    --ckpt_dir='path of checkpoints directory'
+    --ckpt_dir='path of checkpoints directory' \
+    --model='model name'
     ```
 
 ### Visualise estimated pose in 3D
