@@ -1,6 +1,8 @@
 # 2024 SNU 3D CV project
 
-Our code is base of nerfmm : https://github.com/ActiveVisionLab/nerfmm/tree/main
+Sources of our code:
+1) nerfmm : https://github.com/ActiveVisionLab/nerfmm/tree/main
+2) DUSt3R : https://github.com/naver/dust3r
 
 # Updated
 - 2024.06.05 Data generator(Blender format) updated ( see generator branch)
