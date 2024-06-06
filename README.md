@@ -13,7 +13,7 @@ Our code is base of nerfmm : https://github.com/ActiveVisionLab/nerfmm/tree/main
 - Data
 - Dust3r
 
-# How to use
+# Get Started
 
 ## Train
 use train.py
