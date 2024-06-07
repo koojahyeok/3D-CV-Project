@@ -1,0 +1,33 @@
+{
+  "animation_count": 0,
+  "armature_count": 0,
+  "edge_count": 32064,
+  "file_size": 6430576,
+  "lamp_count": 0,
+  "linked_files": [
+    "/home/jinotter3/generate_views/blend_files/../Textura/Pan2TexturePaint.png",
+    "/home/jinotter3/generate_views/blend_files/../../../../../snap/blender/current/2.82/datafiles/studiolights/world/sunrise.exr",
+    "/home/jinotter3/generate_views/blend_files/../Textura/SalchichaPaint1.png",
+    "/home/jinotter3/generate_views/blend_files/../Textura/Pan1PaintTexture.png",
+    "/home/jinotter3/generate_views/blend_files/../Referencia/Pan1.jpg"
+  ],
+  "material_count": 8,
+  "mesh_count": 8,
+  "object_count": 13,
+  "poly_count": 16036,
+  "random_color": null,
+  "scene_size": {
+    "bbox_max": [
+      1.1979788541793823,
+      1.1099227666854858,
+      0.32448723912239075
+    ],
+    "bbox_min": [
+      -1.1979788541793823,
+      -1.2860352993011475,
+      -0.18987518548965454
+    ]
+  },
+  "shape_key_count": 0,
+  "vert_count": 16040
+}

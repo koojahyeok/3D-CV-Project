@@ -1,0 +1,29 @@
+{
+  "animation_count": 0,
+  "armature_count": 0,
+  "edge_count": 1761175,
+  "file_size": 209050884,
+  "lamp_count": 1,
+  "linked_files": [
+    "C:/Users/cuomo/OneDrive/Desktop/fd24a7c70e35de28757c992f3c529d90.png"
+  ],
+  "material_count": 72,
+  "mesh_count": 185,
+  "object_count": 400,
+  "poly_count": 682120,
+  "random_color": null,
+  "scene_size": {
+    "bbox_max": [
+      14.757410049438477,
+      117.42559814453125,
+      52.145145416259766
+    ],
+    "bbox_min": [
+      -69.1311264038086,
+      -58.924522399902344,
+      2.3695485591888428
+    ]
+  },
+  "shape_key_count": 0,
+  "vert_count": 1029070
+}

@@ -1,0 +1,31 @@
+# Ignore all files in the checkpoints directory
+checkpoints/
+
+# Ignore numpy binary files
+*.npy
+*.ipynb
+*.out
+
+# Ignore image files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+
+# Ignore other common files
+__pycache__/
+*.py[cod]
+*.so
+*.ipynb_checkpoints
+.DS_Store
+.env
+*.log
+dustnerf/logs/*
+*.out
+
+# Ignore virtual environments
+venv/
+.env/
+.Python

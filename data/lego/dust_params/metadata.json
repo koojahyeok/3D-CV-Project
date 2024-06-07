@@ -1,0 +1,37 @@
+{
+  "animation_count": 2,
+  "armature_count": 0,
+  "edge_count": 2006215,
+  "file_size": 83248772,
+  "lamp_count": 1,
+  "linked_files": [
+    "/home/jinotter3/dev/generate_views/blend_files/images/texture/Scratch_Texture_by_markopolio_stock.jpg",
+    "/home/jinotter3/dev/generate_views/blend_files/../../../../../snap/blender/current/2.82/datafiles/studiolights/world/sunset.exr",
+    "/home/jinotter3/dev/generate_views/blend_files/images/texture/legoLogo.png",
+    "/home/jinotter3/dev/generate_views/blend_files/../../Textures/HDRI/sky_offworld.jpg"
+  ],
+  "material_count": 12,
+  "mesh_count": 439,
+  "missing_textures": {
+    "count": 0,
+    "file_path_to_color": {},
+    "files": []
+  },
+  "object_count": 505,
+  "poly_count": 1019766,
+  "random_color": null,
+  "scene_size": {
+    "bbox_max": [
+      0.6337441802024841,
+      1.1487375497817993,
+      1.1895978450775146
+    ],
+    "bbox_min": [
+      -0.637787401676178,
+      -1.1400158405303955,
+      -0.3446555733680725
+    ]
+  },
+  "shape_key_count": 0,
+  "vert_count": 986701
+}

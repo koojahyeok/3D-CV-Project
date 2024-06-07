@@ -1,0 +1,47 @@
+{
+  "animation_count": 0,
+  "armature_count": 0,
+  "edge_count": 272356,
+  "file_size": 25575024,
+  "lamp_count": 0,
+  "linked_files": [
+    "/home/jinotter3/generate_views/blend_files/../../../../../snap/blender/current/2.82/datafiles/studiolights/world/interior.exr",
+    "/home/jinotter3/generate_views/blend_files/Textures/homemade/Drum.project/cymbaltexture1k.png",
+    "/home/jinotter3/generate_views/blend_files/Textures/homemade/Drum.project/pdpbadge.JPG",
+    "/home/jinotter3/generate_views/blend_files/Textures/homemade/hmGrunge/lines.png",
+    "/home/jinotter3/generate_views/blend_files/Textures/homemade/Drum.project/pedallogos.jpg",
+    "/home/jinotter3/generate_views/blend_files/Textures/homemade/Wood/Jwood2seamless1k.JPG"
+  ],
+  "material_count": 24,
+  "mesh_count": 142,
+  "missing_textures": {
+    "count": 7,
+    "file_path_to_color": {},
+    "files": [
+      "//Textures/homemade/Drum.project/cymbaltexture1k.png",
+      "//Textures/homemade/Drum.project/cymbaltexture1k.png",
+      "//Textures/homemade/Drum.project/pedallogos.jpg",
+      "//Textures/homemade/Drum.project/pdpbadge.JPG",
+      "//Textures/homemade/Wood/Jwood2seamless1k.JPG",
+      "//Textures/homemade/Wood/Jwood2seamless1k.JPG",
+      "//Textures/homemade/hmGrunge/lines.png"
+    ]
+  },
+  "object_count": 155,
+  "poly_count": 133216,
+  "random_color": null,
+  "scene_size": {
+    "bbox_max": [
+      1.1346898078918457,
+      0.9728554487228394,
+      0.985035240650177
+    ],
+    "bbox_min": [
+      -1.2175720930099487,
+      -0.9023754000663757,
+      -0.49164271354675293
+    ]
+  },
+  "shape_key_count": 8,
+  "vert_count": 140926
+}

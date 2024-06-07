@@ -1,0 +1,43 @@
+{
+  "animation_count": 0,
+  "armature_count": 0,
+  "edge_count": 40128,
+  "file_size": 62888704,
+  "lamp_count": 0,
+  "linked_files": [
+    "/home/jinotter3/generate_views/blend_files/Texture/Pillow_02/Pillow_02_Roughness.jpg",
+    "/home/jinotter3/generate_views/blend_files/Texture/Pillow_01/Pillow_01_Roughness.jpg",
+    "/home/jinotter3/generate_views/blend_files/Texture/Chair/Chair_Height.png",
+    "/home/jinotter3/generate_views/blend_files/Texture/Chair/Chair_Normal.png",
+    "/home/jinotter3/generate_views/blend_files/Texture/Pillow_01/Pillow_01_Height.jpg",
+    "/home/jinotter3/generate_views/blend_files/Texture/Pillow_01/Pillow_01_Base_Color.jpg",
+    "/home/jinotter3/generate_views/blend_files/Texture/Chair/Chair_Base_color.png",
+    "/home/jinotter3/generate_views/blend_files/Texture/Pillow_02/Pillow_02_Height.jpg",
+    "/home/jinotter3/generate_views/blend_files/Texture/Chair/Chair_Metallic.png",
+    "/home/jinotter3/generate_views/blend_files/Texture/Pillow_02/Pillow_02_Normal.jpg",
+    "/home/jinotter3/generate_views/blend_files/Texture/Pillow_01/Pillow_01_Normal.jpg",
+    "/home/jinotter3/generate_views/blend_files/Texture/Pillow_02/Pillow_02_Base_Color.jpg",
+    "/home/jinotter3/generate_views/blend_files/../../../../HDR/Light World.jpg",
+    "/home/jinotter3/generate_views/blend_files/Texture/Chair/Chair_Roughness.png",
+    "/home/jinotter3/generate_views/blend_files/Texture/Chair/Chair_Mixed_AO.png"
+  ],
+  "material_count": 4,
+  "mesh_count": 4,
+  "object_count": 6,
+  "poly_count": 20048,
+  "random_color": null,
+  "scene_size": {
+    "bbox_max": [
+      0.5984919667243958,
+      0.5984925031661987,
+      1.0162289142608643
+    ],
+    "bbox_min": [
+      -0.5984923243522644,
+      -0.5984917283058167,
+      -0.002972380956634879
+    ]
+  },
+  "shape_key_count": 0,
+  "vert_count": 20088
+}

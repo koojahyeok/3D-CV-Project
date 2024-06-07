@@ -41,7 +41,7 @@ class LearnFocal(nn.Module):
                 else:
                     print('Focal init order need to be 1 or 2. Exit')
                     exit()
-                self.fx = nn.Parameter(coe_x, requires_grad=req_grad)  # (1, )
+                self.fx = nn.Parameter(coe_x, requires_grad=req_grad)  # (1, ) (N, )
                 self.fy = nn.Parameter(coe_y, requires_grad=req_grad)  # (1, )
 
     def forward(self, i=None):  # the i=None is just to enable multi-gpu training

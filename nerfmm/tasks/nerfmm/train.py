@@ -46,7 +46,7 @@ def parse_args():
 
     parser.add_argument('--learn_focal', default=True, type=eval, choices=[True, False])
     parser.add_argument('--fx_only', default=False, type=eval, choices=[True, False])
-    parser.add_argument('--focal_order', default=2, type=int)
+    parser.add_argument('--focal_order', default=1, type=int)
     parser.add_argument('--focal_lr', default=0.001, type=float)
     parser.add_argument('--focal_milestones', default=list(range(0, 10000, 100)), type=int, nargs='+',
                         help='learning rate schedule milestones')
@@ -573,3 +573,5 @@ if __name__ == '__main__':
     args = parse_args()
     set_randomness(args)
     main(args)
+
+# python tasks/nerfmm/spiral.py --base_dir '/home/diya/Public/Image2Smiles/KMolOCR_DL_Server/3D-CV-Project/data/' --scene_name='chair' --dtype='BLENDER' --ckpt_dir='/home/diya/Public/Image2Smiles/KMolOCR_DL_Server/3D-CV-Project/dustnerf/logs/nerfmm/chair/lr_0.001_gpu0_seed_17_resize_1_Nsam_128_Ntr_img_-1_freq_10__240607_2248' --focal_order 1
