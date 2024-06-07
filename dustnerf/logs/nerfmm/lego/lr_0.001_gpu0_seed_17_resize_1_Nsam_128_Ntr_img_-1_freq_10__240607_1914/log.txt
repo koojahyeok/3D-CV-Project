@@ -1,0 +1,560 @@
+Namespace(epoch=3000, eval_img_interval=100, eval_cam_interval=5, gpu_id=0, multi_gpu=False, base_dir='/home/diya/Public/Image2Smiles/KMolOCR_DL_Server/3D-CV-Project/data/', scene_name='lego', use_ndc=True, nerf_lr=0.001, nerf_milestones=[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650, 660, 670, 680, 690, 700, 710, 720, 730, 740, 750, 760, 770, 780, 790, 800, 810, 820, 830, 840, 850, 860, 870, 880, 890, 900, 910, 920, 930, 940, 950, 960, 970, 980, 990, 1000, 1010, 1020, 1030, 1040, 1050, 1060, 1070, 1080, 1090, 1100, 1110, 1120, 1130, 1140, 1150, 1160, 1170, 1180, 1190, 1200, 1210, 1220, 1230, 1240, 1250, 1260, 1270, 1280, 1290, 1300, 1310, 1320, 1330, 1340, 1350, 1360, 1370, 1380, 1390, 1400, 1410, 1420, 1430, 1440, 1450, 1460, 1470, 1480, 1490, 1500, 1510, 1520, 1530, 1540, 1550, 1560, 1570, 1580, 1590, 1600, 1610, 1620, 1630, 1640, 1650, 1660, 1670, 1680, 1690, 1700, 1710, 1720, 1730, 1740, 1750, 1760, 1770, 1780, 1790, 1800, 1810, 1820, 1830, 1840, 1850, 1860, 1870, 1880, 1890, 1900, 1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020, 2030, 2040, 2050, 2060, 2070, 2080, 2090, 2100, 2110, 2120, 2130, 2140, 2150, 2160, 2170, 2180, 2190, 2200, 2210, 2220, 2230, 2240, 2250, 2260, 2270, 2280, 2290, 2300, 2310, 2320, 2330, 2340, 2350, 2360, 2370, 2380, 2390, 2400, 2410, 2420, 2430, 2440, 2450, 2460, 2470, 2480, 2490, 2500, 2510, 2520, 2530, 2540, 2550, 2560, 2570, 2580, 2590, 2600, 2610, 2620, 2630, 2640, 2650, 2660, 2670, 2680, 2690, 2700, 2710, 2720, 2730, 2740, 2750, 2760, 2770, 2780, 2790, 2800, 2810, 2820, 2830, 2840, 2850, 2860, 2870, 2880, 2890, 2900, 2910, 2920, 2930, 2940, 2950, 2960, 2970, 2980, 2990, 3000, 3010, 3020, 3030, 3040, 3050, 3060, 3070, 3080, 3090, 3100, 3110, 3120, 3130, 3140, 3150, 3160, 3170, 3180, 3190, 3200, 3210, 3220, 3230, 3240, 3250, 3260, 3270, 3280, 3290, 3300, 3310, 3320, 3330, 3340, 3350, 3360, 3370, 3380, 3390, 3400, 3410, 3420, 3430, 3440, 3450, 3460, 3470, 3480, 3490, 3500, 3510, 3520, 3530, 3540, 3550, 3560, 3570, 3580, 3590, 3600, 3610, 3620, 3630, 3640, 3650, 3660, 3670, 3680, 3690, 3700, 3710, 3720, 3730, 3740, 3750, 3760, 3770, 3780, 3790, 3800, 3810, 3820, 3830, 3840, 3850, 3860, 3870, 3880, 3890, 3900, 3910, 3920, 3930, 3940, 3950, 3960, 3970, 3980, 3990, 4000, 4010, 4020, 4030, 4040, 4050, 4060, 4070, 4080, 4090, 4100, 4110, 4120, 4130, 4140, 4150, 4160, 4170, 4180, 4190, 4200, 4210, 4220, 4230, 4240, 4250, 4260, 4270, 4280, 4290, 4300, 4310, 4320, 4330, 4340, 4350, 4360, 4370, 4380, 4390, 4400, 4410, 4420, 4430, 4440, 4450, 4460, 4470, 4480, 4490, 4500, 4510, 4520, 4530, 4540, 4550, 4560, 4570, 4580, 4590, 4600, 4610, 4620, 4630, 4640, 4650, 4660, 4670, 4680, 4690, 4700, 4710, 4720, 4730, 4740, 4750, 4760, 4770, 4780, 4790, 4800, 4810, 4820, 4830, 4840, 4850, 4860, 4870, 4880, 4890, 4900, 4910, 4920, 4930, 4940, 4950, 4960, 4970, 4980, 4990, 5000, 5010, 5020, 5030, 5040, 5050, 5060, 5070, 5080, 5090, 5100, 5110, 5120, 5130, 5140, 5150, 5160, 5170, 5180, 5190, 5200, 5210, 5220, 5230, 5240, 5250, 5260, 5270, 5280, 5290, 5300, 5310, 5320, 5330, 5340, 5350, 5360, 5370, 5380, 5390, 5400, 5410, 5420, 5430, 5440, 5450, 5460, 5470, 5480, 5490, 5500, 5510, 5520, 5530, 5540, 5550, 5560, 5570, 5580, 5590, 5600, 5610, 5620, 5630, 5640, 5650, 5660, 5670, 5680, 5690, 5700, 5710, 5720, 5730, 5740, 5750, 5760, 5770, 5780, 5790, 5800, 5810, 5820, 5830, 5840, 5850, 5860, 5870, 5880, 5890, 5900, 5910, 5920, 5930, 5940, 5950, 5960, 5970, 5980, 5990, 6000, 6010, 6020, 6030, 6040, 6050, 6060, 6070, 6080, 6090, 6100, 6110, 6120, 6130, 6140, 6150, 6160, 6170, 6180, 6190, 6200, 6210, 6220, 6230, 6240, 6250, 6260, 6270, 6280, 6290, 6300, 6310, 6320, 6330, 6340, 6350, 6360, 6370, 6380, 6390, 6400, 6410, 6420, 6430, 6440, 6450, 6460, 6470, 6480, 6490, 6500, 6510, 6520, 6530, 6540, 6550, 6560, 6570, 6580, 6590, 6600, 6610, 6620, 6630, 6640, 6650, 6660, 6670, 6680, 6690, 6700, 6710, 6720, 6730, 6740, 6750, 6760, 6770, 6780, 6790, 6800, 6810, 6820, 6830, 6840, 6850, 6860, 6870, 6880, 6890, 6900, 6910, 6920, 6930, 6940, 6950, 6960, 6970, 6980, 6990, 7000, 7010, 7020, 7030, 7040, 7050, 7060, 7070, 7080, 7090, 7100, 7110, 7120, 7130, 7140, 7150, 7160, 7170, 7180, 7190, 7200, 7210, 7220, 7230, 7240, 7250, 7260, 7270, 7280, 7290, 7300, 7310, 7320, 7330, 7340, 7350, 7360, 7370, 7380, 7390, 7400, 7410, 7420, 7430, 7440, 7450, 7460, 7470, 7480, 7490, 7500, 7510, 7520, 7530, 7540, 7550, 7560, 7570, 7580, 7590, 7600, 7610, 7620, 7630, 7640, 7650, 7660, 7670, 7680, 7690, 7700, 7710, 7720, 7730, 7740, 7750, 7760, 7770, 7780, 7790, 7800, 7810, 7820, 7830, 7840, 7850, 7860, 7870, 7880, 7890, 7900, 7910, 7920, 7930, 7940, 7950, 7960, 7970, 7980, 7990, 8000, 8010, 8020, 8030, 8040, 8050, 8060, 8070, 8080, 8090, 8100, 8110, 8120, 8130, 8140, 8150, 8160, 8170, 8180, 8190, 8200, 8210, 8220, 8230, 8240, 8250, 8260, 8270, 8280, 8290, 8300, 8310, 8320, 8330, 8340, 8350, 8360, 8370, 8380, 8390, 8400, 8410, 8420, 8430, 8440, 8450, 8460, 8470, 8480, 8490, 8500, 8510, 8520, 8530, 8540, 8550, 8560, 8570, 8580, 8590, 8600, 8610, 8620, 8630, 8640, 8650, 8660, 8670, 8680, 8690, 8700, 8710, 8720, 8730, 8740, 8750, 8760, 8770, 8780, 8790, 8800, 8810, 8820, 8830, 8840, 8850, 8860, 8870, 8880, 8890, 8900, 8910, 8920, 8930, 8940, 8950, 8960, 8970, 8980, 8990, 9000, 9010, 9020, 9030, 9040, 9050, 9060, 9070, 9080, 9090, 9100, 9110, 9120, 9130, 9140, 9150, 9160, 9170, 9180, 9190, 9200, 9210, 9220, 9230, 9240, 9250, 9260, 9270, 9280, 9290, 9300, 9310, 9320, 9330, 9340, 9350, 9360, 9370, 9380, 9390, 9400, 9410, 9420, 9430, 9440, 9450, 9460, 9470, 9480, 9490, 9500, 9510, 9520, 9530, 9540, 9550, 9560, 9570, 9580, 9590, 9600, 9610, 9620, 9630, 9640, 9650, 9660, 9670, 9680, 9690, 9700, 9710, 9720, 9730, 9740, 9750, 9760, 9770, 9780, 9790, 9800, 9810, 9820, 9830, 9840, 9850, 9860, 9870, 9880, 9890, 9900, 9910, 9920, 9930, 9940, 9950, 9960, 9970, 9980, 9990], nerf_lr_gamma=0.9954, learn_focal=True, fx_only=False, focal_order=2, focal_lr=0.001, focal_milestones=[0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000, 3100, 3200, 3300, 3400, 3500, 3600, 3700, 3800, 3900, 4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900, 5000, 5100, 5200, 5300, 5400, 5500, 5600, 5700, 5800, 5900, 6000, 6100, 6200, 6300, 6400, 6500, 6600, 6700, 6800, 6900, 7000, 7100, 7200, 7300, 7400, 7500, 7600, 7700, 7800, 7900, 8000, 8100, 8200, 8300, 8400, 8500, 8600, 8700, 8800, 8900, 9000, 9100, 9200, 9300, 9400, 9500, 9600, 9700, 9800, 9900], focal_lr_gamma=0.9, learn_R=True, learn_t=True, pose_lr=0.001, pose_milestones=[0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000, 3100, 3200, 3300, 3400, 3500, 3600, 3700, 3800, 3900, 4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900, 5000, 5100, 5200, 5300, 5400, 5500, 5600, 5700, 5800, 5900, 6000, 6100, 6200, 6300, 6400, 6500, 6600, 6700, 6800, 6900, 7000, 7100, 7200, 7300, 7400, 7500, 7600, 7700, 7800, 7900, 8000, 8100, 8200, 8300, 8400, 8500, 8600, 8700, 8800, 8900, 9000, 9100, 9200, 9300, 9400, 9500, 9600, 9700, 9800, 9900], pose_lr_gamma=0.9, store_pose_history=True, start_refine_pose_epoch=-1, start_refine_focal_epoch=-1, resize_ratio=1, num_rows_eval_img=10, hidden_dims=128, train_rand_rows=32, train_rand_cols=32, num_sample=128, pos_enc_levels=10, pos_enc_inc_in=True, use_dir_enc=True, dir_enc_levels=4, dir_enc_inc_in=True, train_img_num=-1, train_skip=1, eval_img_num=1, eval_skip=1, rand_seed=17, true_rand=False, alias='', dtype='BLENDER', model='nerfmm', init_weight=3, init_global_bias=-700, dustparam_path_name='dust_params')
+     0 ep: Train: L2 loss: 0.1170, PSNR: 9.318
+     1 ep: Train: L2 loss: 0.0907, PSNR: 10.424
+     2 ep: Train: L2 loss: 0.0839, PSNR: 10.763
+     3 ep: Train: L2 loss: 0.0844, PSNR: 10.737
+     4 ep: Train: L2 loss: 0.0785, PSNR: 11.052
+     5 ep: Train: L2 loss: 0.0734, PSNR: 11.342
+     5 ep Traj Err: translation: 0.057274, rotation: 3.81 deg, scale: 34.96
+     6 ep: Train: L2 loss: 0.0734, PSNR: 11.343
+     7 ep: Train: L2 loss: 0.0679, PSNR: 11.682
+     8 ep: Train: L2 loss: 0.0649, PSNR: 11.880
+     9 ep: Train: L2 loss: 0.0646, PSNR: 11.900
+    10 ep: Train: L2 loss: 0.0626, PSNR: 12.036
+    10 ep Traj Err: translation: 0.086197, rotation: 7.50 deg, scale: 51.79
+    11 ep: Train: L2 loss: 0.0615, PSNR: 12.115
+    12 ep: Train: L2 loss: 0.0603, PSNR: 12.193
+    13 ep: Train: L2 loss: 0.0592, PSNR: 12.276
+    14 ep: Train: L2 loss: 0.0559, PSNR: 12.526
+    15 ep: Train: L2 loss: 0.0548, PSNR: 12.615
+    15 ep Traj Err: translation: 0.101002, rotation: 11.33 deg, scale: 56.67
+    16 ep: Train: L2 loss: 0.0574, PSNR: 12.413
+    17 ep: Train: L2 loss: 0.0560, PSNR: 12.515
+    18 ep: Train: L2 loss: 0.0565, PSNR: 12.477
+    19 ep: Train: L2 loss: 0.0563, PSNR: 12.494
+    20 ep: Train: L2 loss: 0.0553, PSNR: 12.573
+    20 ep Traj Err: translation: 0.112757, rotation: 11.91 deg, scale: 62.36
+    21 ep: Train: L2 loss: 0.0556, PSNR: 12.550
+    22 ep: Train: L2 loss: 0.0540, PSNR: 12.678
+    23 ep: Train: L2 loss: 0.0532, PSNR: 12.738
+    24 ep: Train: L2 loss: 0.0518, PSNR: 12.857
+    25 ep: Train: L2 loss: 0.0535, PSNR: 12.713
+    25 ep Traj Err: translation: 0.121300, rotation: 14.06 deg, scale: 62.39
+    26 ep: Train: L2 loss: 0.0520, PSNR: 12.839
+    27 ep: Train: L2 loss: 0.0525, PSNR: 12.800
+    28 ep: Train: L2 loss: 0.0499, PSNR: 13.018
+    29 ep: Train: L2 loss: 0.0514, PSNR: 12.890
+    30 ep: Train: L2 loss: 0.0514, PSNR: 12.891
+    30 ep Traj Err: translation: 0.127819, rotation: 15.07 deg, scale: 64.33
+    31 ep: Train: L2 loss: 0.0514, PSNR: 12.892
+    32 ep: Train: L2 loss: 0.0483, PSNR: 13.163
+    33 ep: Train: L2 loss: 0.0493, PSNR: 13.073
+    34 ep: Train: L2 loss: 0.0495, PSNR: 13.050
+    35 ep: Train: L2 loss: 0.0489, PSNR: 13.110
+    35 ep Traj Err: translation: 0.134666, rotation: 15.13 deg, scale: 64.53
+    36 ep: Train: L2 loss: 0.0494, PSNR: 13.066
+    37 ep: Train: L2 loss: 0.0506, PSNR: 12.955
+    38 ep: Train: L2 loss: 0.0486, PSNR: 13.133
+    39 ep: Train: L2 loss: 0.0478, PSNR: 13.210
+    40 ep: Train: L2 loss: 0.0482, PSNR: 13.165
+    40 ep Traj Err: translation: 0.139118, rotation: 16.55 deg, scale: 66.42
+    41 ep: Train: L2 loss: 0.0477, PSNR: 13.217
+    42 ep: Train: L2 loss: 0.0477, PSNR: 13.216
+    43 ep: Train: L2 loss: 0.0472, PSNR: 13.258
+    44 ep: Train: L2 loss: 0.0475, PSNR: 13.237
+    45 ep: Train: L2 loss: 0.0488, PSNR: 13.119
+    45 ep Traj Err: translation: 0.143711, rotation: 16.66 deg, scale: 67.46
+    46 ep: Train: L2 loss: 0.0472, PSNR: 13.259
+    47 ep: Train: L2 loss: 0.0479, PSNR: 13.198
+    48 ep: Train: L2 loss: 0.0490, PSNR: 13.098
+    49 ep: Train: L2 loss: 0.0489, PSNR: 13.111
+    50 ep: Train: L2 loss: 0.0474, PSNR: 13.242
+    50 ep Traj Err: translation: 0.149401, rotation: 17.93 deg, scale: 69.44
+    51 ep: Train: L2 loss: 0.0478, PSNR: 13.205
+    52 ep: Train: L2 loss: 0.0466, PSNR: 13.320
+    53 ep: Train: L2 loss: 0.0478, PSNR: 13.203
+    54 ep: Train: L2 loss: 0.0461, PSNR: 13.365
+    55 ep: Train: L2 loss: 0.0475, PSNR: 13.232
+    55 ep Traj Err: translation: 0.152364, rotation: 17.19 deg, scale: 71.18
+    56 ep: Train: L2 loss: 0.0444, PSNR: 13.524
+    57 ep: Train: L2 loss: 0.0463, PSNR: 13.341
+    58 ep: Train: L2 loss: 0.0441, PSNR: 13.559
+    59 ep: Train: L2 loss: 0.0482, PSNR: 13.173
+    60 ep: Train: L2 loss: 0.0459, PSNR: 13.380
+    60 ep Traj Err: translation: 0.155490, rotation: 18.66 deg, scale: 70.88
+    61 ep: Train: L2 loss: 0.0442, PSNR: 13.551
+    62 ep: Train: L2 loss: 0.0449, PSNR: 13.475
+    63 ep: Train: L2 loss: 0.0429, PSNR: 13.673
+    64 ep: Train: L2 loss: 0.0458, PSNR: 13.390
+    65 ep: Train: L2 loss: 0.0449, PSNR: 13.482
+    65 ep Traj Err: translation: 0.160417, rotation: 19.11 deg, scale: 73.08
+    66 ep: Train: L2 loss: 0.0457, PSNR: 13.401
+    67 ep: Train: L2 loss: 0.0429, PSNR: 13.678
+    68 ep: Train: L2 loss: 0.0438, PSNR: 13.582
+    69 ep: Train: L2 loss: 0.0443, PSNR: 13.540
+    70 ep: Train: L2 loss: 0.0433, PSNR: 13.634
+    70 ep Traj Err: translation: 0.163498, rotation: 21.08 deg, scale: 72.99
+    71 ep: Train: L2 loss: 0.0445, PSNR: 13.521
+    72 ep: Train: L2 loss: 0.0442, PSNR: 13.549
+    73 ep: Train: L2 loss: 0.0427, PSNR: 13.696
+    74 ep: Train: L2 loss: 0.0436, PSNR: 13.602
+    75 ep: Train: L2 loss: 0.0450, PSNR: 13.471
+    75 ep Traj Err: translation: 0.167685, rotation: 22.73 deg, scale: 73.60
+    76 ep: Train: L2 loss: 0.0441, PSNR: 13.558
+    77 ep: Train: L2 loss: 0.0423, PSNR: 13.739
+    78 ep: Train: L2 loss: 0.0409, PSNR: 13.884
+    79 ep: Train: L2 loss: 0.0423, PSNR: 13.741
+    80 ep: Train: L2 loss: 0.0430, PSNR: 13.663
+    80 ep Traj Err: translation: 0.170267, rotation: 22.66 deg, scale: 74.38
+    81 ep: Train: L2 loss: 0.0433, PSNR: 13.631
+    82 ep: Train: L2 loss: 0.0420, PSNR: 13.771
+    83 ep: Train: L2 loss: 0.0417, PSNR: 13.798
+    84 ep: Train: L2 loss: 0.0415, PSNR: 13.824
+    85 ep: Train: L2 loss: 0.0423, PSNR: 13.737
+    85 ep Traj Err: translation: 0.173670, rotation: 23.52 deg, scale: 74.01
+    86 ep: Train: L2 loss: 0.0454, PSNR: 13.430
+    87 ep: Train: L2 loss: 0.0417, PSNR: 13.801
+    88 ep: Train: L2 loss: 0.0431, PSNR: 13.657
+    89 ep: Train: L2 loss: 0.0398, PSNR: 14.002
+    90 ep: Train: L2 loss: 0.0410, PSNR: 13.868
+    90 ep Traj Err: translation: 0.176839, rotation: 26.35 deg, scale: 74.47
+    91 ep: Train: L2 loss: 0.0408, PSNR: 13.894
+    92 ep: Train: L2 loss: 0.0408, PSNR: 13.890
+    93 ep: Train: L2 loss: 0.0369, PSNR: 14.335
+    94 ep: Train: L2 loss: 0.0388, PSNR: 14.109
+    95 ep: Train: L2 loss: 0.0400, PSNR: 13.983
+    95 ep Traj Err: translation: 0.179629, rotation: 26.39 deg, scale: 74.16
+    96 ep: Train: L2 loss: 0.0416, PSNR: 13.808
+    97 ep: Train: L2 loss: 0.0405, PSNR: 13.927
+    98 ep: Train: L2 loss: 0.0402, PSNR: 13.959
+    99 ep: Train: L2 loss: 0.0394, PSNR: 14.047
+   100 ep: Train: L2 loss: 0.0377, PSNR: 14.239
+   100 ep Traj Err: translation: 0.182746, rotation: 27.87 deg, scale: 74.24
+   101 ep: Train: L2 loss: 0.0397, PSNR: 14.014
+   102 ep: Train: L2 loss: 0.0401, PSNR: 13.973
+   103 ep: Train: L2 loss: 0.0382, PSNR: 14.176
+   104 ep: Train: L2 loss: 0.0383, PSNR: 14.165
+   105 ep: Train: L2 loss: 0.0407, PSNR: 13.903
+   105 ep Traj Err: translation: 0.185980, rotation: 27.68 deg, scale: 74.35
+   106 ep: Train: L2 loss: 0.0410, PSNR: 13.869
+   107 ep: Train: L2 loss: 0.0372, PSNR: 14.300
+   108 ep: Train: L2 loss: 0.0385, PSNR: 14.151
+   109 ep: Train: L2 loss: 0.0384, PSNR: 14.161
+   110 ep: Train: L2 loss: 0.0366, PSNR: 14.370
+   110 ep Traj Err: translation: 0.188252, rotation: 29.04 deg, scale: 74.90
+   111 ep: Train: L2 loss: 0.0369, PSNR: 14.325
+   112 ep: Train: L2 loss: 0.0382, PSNR: 14.181
+   113 ep: Train: L2 loss: 0.0377, PSNR: 14.239
+   114 ep: Train: L2 loss: 0.0397, PSNR: 14.011
+   115 ep: Train: L2 loss: 0.0388, PSNR: 14.108
+   115 ep Traj Err: translation: 0.189826, rotation: 29.55 deg, scale: 74.15
+   116 ep: Train: L2 loss: 0.0386, PSNR: 14.140
+   117 ep: Train: L2 loss: 0.0391, PSNR: 14.080
+   118 ep: Train: L2 loss: 0.0368, PSNR: 14.347
+   119 ep: Train: L2 loss: 0.0371, PSNR: 14.301
+   120 ep: Train: L2 loss: 0.0369, PSNR: 14.329
+   120 ep Traj Err: translation: 0.191902, rotation: 30.65 deg, scale: 75.21
+   121 ep: Train: L2 loss: 0.0377, PSNR: 14.238
+   122 ep: Train: L2 loss: 0.0386, PSNR: 14.136
+   123 ep: Train: L2 loss: 0.0365, PSNR: 14.379
+   124 ep: Train: L2 loss: 0.0383, PSNR: 14.167
+   125 ep: Train: L2 loss: 0.0383, PSNR: 14.171
+   125 ep Traj Err: translation: 0.193255, rotation: 30.48 deg, scale: 75.60
+   126 ep: Train: L2 loss: 0.0378, PSNR: 14.226
+   127 ep: Train: L2 loss: 0.0380, PSNR: 14.205
+   128 ep: Train: L2 loss: 0.0358, PSNR: 14.466
+   129 ep: Train: L2 loss: 0.0372, PSNR: 14.294
+   130 ep: Train: L2 loss: 0.0372, PSNR: 14.297
+   130 ep Traj Err: translation: 0.194665, rotation: 31.21 deg, scale: 75.14
+   131 ep: Train: L2 loss: 0.0371, PSNR: 14.308
+   132 ep: Train: L2 loss: 0.0366, PSNR: 14.370
+   133 ep: Train: L2 loss: 0.0348, PSNR: 14.581
+   134 ep: Train: L2 loss: 0.0359, PSNR: 14.444
+   135 ep: Train: L2 loss: 0.0390, PSNR: 14.090
+   135 ep Traj Err: translation: 0.195835, rotation: 31.85 deg, scale: 75.33
+   136 ep: Train: L2 loss: 0.0365, PSNR: 14.377
+   137 ep: Train: L2 loss: 0.0371, PSNR: 14.301
+   138 ep: Train: L2 loss: 0.0367, PSNR: 14.358
+   139 ep: Train: L2 loss: 0.0360, PSNR: 14.442
+   140 ep: Train: L2 loss: 0.0387, PSNR: 14.125
+   140 ep Traj Err: translation: 0.197448, rotation: 32.59 deg, scale: 74.71
+   141 ep: Train: L2 loss: 0.0361, PSNR: 14.428
+   142 ep: Train: L2 loss: 0.0364, PSNR: 14.393
+   143 ep: Train: L2 loss: 0.0339, PSNR: 14.692
+   144 ep: Train: L2 loss: 0.0356, PSNR: 14.487
+   145 ep: Train: L2 loss: 0.0360, PSNR: 14.433
+   145 ep Traj Err: translation: 0.199220, rotation: 32.41 deg, scale: 75.66
+   146 ep: Train: L2 loss: 0.0361, PSNR: 14.420
+   147 ep: Train: L2 loss: 0.0364, PSNR: 14.395
+   148 ep: Train: L2 loss: 0.0362, PSNR: 14.412
+   149 ep: Train: L2 loss: 0.0357, PSNR: 14.478
+   150 ep: Train: L2 loss: 0.0345, PSNR: 14.627
+   150 ep Traj Err: translation: 0.200804, rotation: 33.64 deg, scale: 75.21
+   151 ep: Train: L2 loss: 0.0348, PSNR: 14.581
+   152 ep: Train: L2 loss: 0.0340, PSNR: 14.681
+   153 ep: Train: L2 loss: 0.0361, PSNR: 14.425
+   154 ep: Train: L2 loss: 0.0366, PSNR: 14.367
+   155 ep: Train: L2 loss: 0.0350, PSNR: 14.558
+   155 ep Traj Err: translation: 0.202113, rotation: 33.21 deg, scale: 75.88
+   156 ep: Train: L2 loss: 0.0334, PSNR: 14.767
+   157 ep: Train: L2 loss: 0.0360, PSNR: 14.434
+   158 ep: Train: L2 loss: 0.0362, PSNR: 14.414
+   159 ep: Train: L2 loss: 0.0351, PSNR: 14.543
+   160 ep: Train: L2 loss: 0.0345, PSNR: 14.624
+   160 ep Traj Err: translation: 0.201565, rotation: 33.63 deg, scale: 76.31
+   161 ep: Train: L2 loss: 0.0342, PSNR: 14.665
+   162 ep: Train: L2 loss: 0.0342, PSNR: 14.656
+   163 ep: Train: L2 loss: 0.0348, PSNR: 14.590
+   164 ep: Train: L2 loss: 0.0344, PSNR: 14.639
+   165 ep: Train: L2 loss: 0.0353, PSNR: 14.524
+   165 ep Traj Err: translation: 0.203772, rotation: 33.67 deg, scale: 76.70
+   166 ep: Train: L2 loss: 0.0349, PSNR: 14.568
+   167 ep: Train: L2 loss: 0.0343, PSNR: 14.642
+   168 ep: Train: L2 loss: 0.0346, PSNR: 14.607
+   169 ep: Train: L2 loss: 0.0334, PSNR: 14.768
+   170 ep: Train: L2 loss: 0.0349, PSNR: 14.575
+   170 ep Traj Err: translation: 0.204920, rotation: 34.11 deg, scale: 76.31
+   171 ep: Train: L2 loss: 0.0340, PSNR: 14.682
+   172 ep: Train: L2 loss: 0.0335, PSNR: 14.745
+   173 ep: Train: L2 loss: 0.0327, PSNR: 14.859
+   174 ep: Train: L2 loss: 0.0341, PSNR: 14.671
+   175 ep: Train: L2 loss: 0.0337, PSNR: 14.727
+   175 ep Traj Err: translation: 0.205314, rotation: 34.24 deg, scale: 76.83
+   176 ep: Train: L2 loss: 0.0331, PSNR: 14.805
+   177 ep: Train: L2 loss: 0.0336, PSNR: 14.733
+   178 ep: Train: L2 loss: 0.0346, PSNR: 14.609
+   179 ep: Train: L2 loss: 0.0349, PSNR: 14.569
+   180 ep: Train: L2 loss: 0.0345, PSNR: 14.617
+   180 ep Traj Err: translation: 0.205497, rotation: 34.99 deg, scale: 76.82
+   181 ep: Train: L2 loss: 0.0347, PSNR: 14.596
+   182 ep: Train: L2 loss: 0.0324, PSNR: 14.898
+   183 ep: Train: L2 loss: 0.0327, PSNR: 14.861
+   184 ep: Train: L2 loss: 0.0330, PSNR: 14.815
+   185 ep: Train: L2 loss: 0.0324, PSNR: 14.901
+   185 ep Traj Err: translation: 0.206557, rotation: 35.30 deg, scale: 77.18
+   186 ep: Train: L2 loss: 0.0318, PSNR: 14.976
+   187 ep: Train: L2 loss: 0.0333, PSNR: 14.771
+   188 ep: Train: L2 loss: 0.0338, PSNR: 14.706
+   189 ep: Train: L2 loss: 0.0337, PSNR: 14.718
+   190 ep: Train: L2 loss: 0.0340, PSNR: 14.691
+   190 ep Traj Err: translation: 0.206838, rotation: 35.47 deg, scale: 77.26
+   191 ep: Train: L2 loss: 0.0340, PSNR: 14.681
+   192 ep: Train: L2 loss: 0.0323, PSNR: 14.906
+   193 ep: Train: L2 loss: 0.0322, PSNR: 14.926
+   194 ep: Train: L2 loss: 0.0339, PSNR: 14.694
+   195 ep: Train: L2 loss: 0.0332, PSNR: 14.790
+   195 ep Traj Err: translation: 0.206965, rotation: 35.05 deg, scale: 77.40
+   196 ep: Train: L2 loss: 0.0322, PSNR: 14.918
+   197 ep: Train: L2 loss: 0.0316, PSNR: 15.006
+   198 ep: Train: L2 loss: 0.0313, PSNR: 15.040
+   199 ep: Train: L2 loss: 0.0318, PSNR: 14.972
+   200 ep: Train: L2 loss: 0.0320, PSNR: 14.953
+   200 ep Traj Err: translation: 0.208046, rotation: 35.99 deg, scale: 77.18
+   201 ep: Train: L2 loss: 0.0311, PSNR: 15.071
+   202 ep: Train: L2 loss: 0.0311, PSNR: 15.073
+   203 ep: Train: L2 loss: 0.0312, PSNR: 15.059
+   204 ep: Train: L2 loss: 0.0309, PSNR: 15.095
+   205 ep: Train: L2 loss: 0.0314, PSNR: 15.036
+   205 ep Traj Err: translation: 0.208363, rotation: 36.15 deg, scale: 76.45
+   206 ep: Train: L2 loss: 0.0323, PSNR: 14.913
+   207 ep: Train: L2 loss: 0.0318, PSNR: 14.975
+   208 ep: Train: L2 loss: 0.0305, PSNR: 15.162
+   209 ep: Train: L2 loss: 0.0325, PSNR: 14.881
+   210 ep: Train: L2 loss: 0.0323, PSNR: 14.904
+   210 ep Traj Err: translation: 0.208830, rotation: 36.34 deg, scale: 77.61
+   211 ep: Train: L2 loss: 0.0314, PSNR: 15.037
+   212 ep: Train: L2 loss: 0.0307, PSNR: 15.135
+   213 ep: Train: L2 loss: 0.0298, PSNR: 15.262
+   214 ep: Train: L2 loss: 0.0322, PSNR: 14.926
+   215 ep: Train: L2 loss: 0.0318, PSNR: 14.969
+   215 ep Traj Err: translation: 0.209439, rotation: 36.30 deg, scale: 77.30
+   216 ep: Train: L2 loss: 0.0313, PSNR: 15.044
+   217 ep: Train: L2 loss: 0.0318, PSNR: 14.974
+   218 ep: Train: L2 loss: 0.0310, PSNR: 15.091
+   219 ep: Train: L2 loss: 0.0309, PSNR: 15.098
+   220 ep: Train: L2 loss: 0.0309, PSNR: 15.096
+   220 ep Traj Err: translation: 0.209600, rotation: 36.60 deg, scale: 77.14
+   221 ep: Train: L2 loss: 0.0317, PSNR: 14.995
+   222 ep: Train: L2 loss: 0.0305, PSNR: 15.157
+   223 ep: Train: L2 loss: 0.0306, PSNR: 15.145
+   224 ep: Train: L2 loss: 0.0305, PSNR: 15.158
+   225 ep: Train: L2 loss: 0.0307, PSNR: 15.129
+   225 ep Traj Err: translation: 0.209699, rotation: 37.16 deg, scale: 76.83
+   226 ep: Train: L2 loss: 0.0322, PSNR: 14.924
+   227 ep: Train: L2 loss: 0.0317, PSNR: 14.987
+   228 ep: Train: L2 loss: 0.0312, PSNR: 15.053
+   229 ep: Train: L2 loss: 0.0304, PSNR: 15.173
+   230 ep: Train: L2 loss: 0.0309, PSNR: 15.105
+   230 ep Traj Err: translation: 0.209874, rotation: 37.67 deg, scale: 75.90
+   231 ep: Train: L2 loss: 0.0310, PSNR: 15.084
+   232 ep: Train: L2 loss: 0.0305, PSNR: 15.150
+   233 ep: Train: L2 loss: 0.0304, PSNR: 15.176
+   234 ep: Train: L2 loss: 0.0318, PSNR: 14.975
+   235 ep: Train: L2 loss: 0.0311, PSNR: 15.068
+   235 ep Traj Err: translation: 0.210332, rotation: 37.38 deg, scale: 76.82
+   236 ep: Train: L2 loss: 0.0319, PSNR: 14.963
+   237 ep: Train: L2 loss: 0.0282, PSNR: 15.493
+   238 ep: Train: L2 loss: 0.0311, PSNR: 15.070
+   239 ep: Train: L2 loss: 0.0301, PSNR: 15.214
+   240 ep: Train: L2 loss: 0.0302, PSNR: 15.194
+   240 ep Traj Err: translation: 0.210754, rotation: 37.11 deg, scale: 76.54
+   241 ep: Train: L2 loss: 0.0304, PSNR: 15.175
+   242 ep: Train: L2 loss: 0.0307, PSNR: 15.127
+   243 ep: Train: L2 loss: 0.0306, PSNR: 15.146
+   244 ep: Train: L2 loss: 0.0297, PSNR: 15.266
+   245 ep: Train: L2 loss: 0.0295, PSNR: 15.300
+   245 ep Traj Err: translation: 0.210932, rotation: 37.36 deg, scale: 76.26
+   246 ep: Train: L2 loss: 0.0322, PSNR: 14.920
+   247 ep: Train: L2 loss: 0.0317, PSNR: 14.990
+   248 ep: Train: L2 loss: 0.0309, PSNR: 15.104
+   249 ep: Train: L2 loss: 0.0303, PSNR: 15.190
+   250 ep: Train: L2 loss: 0.0308, PSNR: 15.116
+   250 ep Traj Err: translation: 0.211414, rotation: 37.34 deg, scale: 76.56
+   251 ep: Train: L2 loss: 0.0295, PSNR: 15.305
+   252 ep: Train: L2 loss: 0.0294, PSNR: 15.310
+   253 ep: Train: L2 loss: 0.0282, PSNR: 15.501
+   254 ep: Train: L2 loss: 0.0314, PSNR: 15.037
+   255 ep: Train: L2 loss: 0.0304, PSNR: 15.174
+   255 ep Traj Err: translation: 0.212114, rotation: 37.96 deg, scale: 76.50
+   256 ep: Train: L2 loss: 0.0315, PSNR: 15.013
+   257 ep: Train: L2 loss: 0.0318, PSNR: 14.972
+   258 ep: Train: L2 loss: 0.0295, PSNR: 15.301
+   259 ep: Train: L2 loss: 0.0299, PSNR: 15.241
+   260 ep: Train: L2 loss: 0.0290, PSNR: 15.369
+   260 ep Traj Err: translation: 0.211978, rotation: 37.83 deg, scale: 77.04
+   261 ep: Train: L2 loss: 0.0290, PSNR: 15.371
+   262 ep: Train: L2 loss: 0.0288, PSNR: 15.403
+   263 ep: Train: L2 loss: 0.0293, PSNR: 15.332
+   264 ep: Train: L2 loss: 0.0314, PSNR: 15.034
+   265 ep: Train: L2 loss: 0.0316, PSNR: 15.009
+   265 ep Traj Err: translation: 0.212746, rotation: 38.20 deg, scale: 76.90
+   266 ep: Train: L2 loss: 0.0297, PSNR: 15.268
+   267 ep: Train: L2 loss: 0.0292, PSNR: 15.347
+   268 ep: Train: L2 loss: 0.0294, PSNR: 15.323
+   269 ep: Train: L2 loss: 0.0306, PSNR: 15.139
+   270 ep: Train: L2 loss: 0.0274, PSNR: 15.630
+   270 ep Traj Err: translation: 0.212250, rotation: 38.15 deg, scale: 76.10
+   271 ep: Train: L2 loss: 0.0300, PSNR: 15.226
+   272 ep: Train: L2 loss: 0.0290, PSNR: 15.371
+   273 ep: Train: L2 loss: 0.0275, PSNR: 15.610
+   274 ep: Train: L2 loss: 0.0301, PSNR: 15.217
+   275 ep: Train: L2 loss: 0.0296, PSNR: 15.294
+   275 ep Traj Err: translation: 0.212796, rotation: 38.93 deg, scale: 76.68
+   276 ep: Train: L2 loss: 0.0294, PSNR: 15.310
+   277 ep: Train: L2 loss: 0.0308, PSNR: 15.118
+   278 ep: Train: L2 loss: 0.0292, PSNR: 15.349
+   279 ep: Train: L2 loss: 0.0294, PSNR: 15.319
+   280 ep: Train: L2 loss: 0.0279, PSNR: 15.549
+   280 ep Traj Err: translation: 0.212586, rotation: 39.04 deg, scale: 76.63
+   281 ep: Train: L2 loss: 0.0289, PSNR: 15.394
+   282 ep: Train: L2 loss: 0.0278, PSNR: 15.560
+   283 ep: Train: L2 loss: 0.0274, PSNR: 15.619
+   284 ep: Train: L2 loss: 0.0298, PSNR: 15.252
+   285 ep: Train: L2 loss: 0.0294, PSNR: 15.312
+   285 ep Traj Err: translation: 0.212810, rotation: 38.53 deg, scale: 76.70
+   286 ep: Train: L2 loss: 0.0291, PSNR: 15.361
+   287 ep: Train: L2 loss: 0.0298, PSNR: 15.262
+   288 ep: Train: L2 loss: 0.0305, PSNR: 15.159
+   289 ep: Train: L2 loss: 0.0282, PSNR: 15.493
+   290 ep: Train: L2 loss: 0.0289, PSNR: 15.388
+   290 ep Traj Err: translation: 0.212683, rotation: 38.58 deg, scale: 76.03
+   291 ep: Train: L2 loss: 0.0292, PSNR: 15.346
+   292 ep: Train: L2 loss: 0.0271, PSNR: 15.668
+   293 ep: Train: L2 loss: 0.0282, PSNR: 15.497
+   294 ep: Train: L2 loss: 0.0286, PSNR: 15.439
+   295 ep: Train: L2 loss: 0.0280, PSNR: 15.527
+   295 ep Traj Err: translation: 0.213095, rotation: 38.53 deg, scale: 77.51
+   296 ep: Train: L2 loss: 0.0300, PSNR: 15.235
+   297 ep: Train: L2 loss: 0.0299, PSNR: 15.237
+   298 ep: Train: L2 loss: 0.0284, PSNR: 15.461
+   299 ep: Train: L2 loss: 0.0288, PSNR: 15.402
+   300 ep: Train: L2 loss: 0.0289, PSNR: 15.387
+   300 ep Traj Err: translation: 0.213884, rotation: 39.39 deg, scale: 76.93
+   301 ep: Train: L2 loss: 0.0272, PSNR: 15.655
+   302 ep: Train: L2 loss: 0.0280, PSNR: 15.525
+   303 ep: Train: L2 loss: 0.0290, PSNR: 15.376
+   304 ep: Train: L2 loss: 0.0257, PSNR: 15.894
+   305 ep: Train: L2 loss: 0.0289, PSNR: 15.395
+   305 ep Traj Err: translation: 0.213997, rotation: 39.37 deg, scale: 76.79
+   306 ep: Train: L2 loss: 0.0279, PSNR: 15.540
+   307 ep: Train: L2 loss: 0.0278, PSNR: 15.562
+   308 ep: Train: L2 loss: 0.0281, PSNR: 15.519
+   309 ep: Train: L2 loss: 0.0278, PSNR: 15.561
+   310 ep: Train: L2 loss: 0.0274, PSNR: 15.616
+   310 ep Traj Err: translation: 0.214453, rotation: 39.30 deg, scale: 77.02
+   311 ep: Train: L2 loss: 0.0262, PSNR: 15.810
+   312 ep: Train: L2 loss: 0.0276, PSNR: 15.594
+   313 ep: Train: L2 loss: 0.0262, PSNR: 15.813
+   314 ep: Train: L2 loss: 0.0279, PSNR: 15.546
+   315 ep: Train: L2 loss: 0.0282, PSNR: 15.496
+   315 ep Traj Err: translation: 0.213849, rotation: 39.16 deg, scale: 76.22
+   316 ep: Train: L2 loss: 0.0271, PSNR: 15.669
+   317 ep: Train: L2 loss: 0.0277, PSNR: 15.579
+   318 ep: Train: L2 loss: 0.0279, PSNR: 15.539
+   319 ep: Train: L2 loss: 0.0262, PSNR: 15.817
+   320 ep: Train: L2 loss: 0.0263, PSNR: 15.794
+   320 ep Traj Err: translation: 0.213971, rotation: 39.29 deg, scale: 76.36
+   321 ep: Train: L2 loss: 0.0275, PSNR: 15.604
+   322 ep: Train: L2 loss: 0.0280, PSNR: 15.531
+   323 ep: Train: L2 loss: 0.0287, PSNR: 15.416
+   324 ep: Train: L2 loss: 0.0289, PSNR: 15.393
+   325 ep: Train: L2 loss: 0.0277, PSNR: 15.580
+   325 ep Traj Err: translation: 0.214476, rotation: 39.04 deg, scale: 75.98
+   326 ep: Train: L2 loss: 0.0272, PSNR: 15.662
+   327 ep: Train: L2 loss: 0.0272, PSNR: 15.655
+   328 ep: Train: L2 loss: 0.0270, PSNR: 15.681
+   329 ep: Train: L2 loss: 0.0278, PSNR: 15.560
+   330 ep: Train: L2 loss: 0.0273, PSNR: 15.639
+   330 ep Traj Err: translation: 0.214399, rotation: 39.91 deg, scale: 76.20
+   331 ep: Train: L2 loss: 0.0274, PSNR: 15.630
+   332 ep: Train: L2 loss: 0.0273, PSNR: 15.634
+   333 ep: Train: L2 loss: 0.0273, PSNR: 15.641
+   334 ep: Train: L2 loss: 0.0275, PSNR: 15.606
+   335 ep: Train: L2 loss: 0.0263, PSNR: 15.802
+   335 ep Traj Err: translation: 0.214870, rotation: 39.47 deg, scale: 76.57
+   336 ep: Train: L2 loss: 0.0263, PSNR: 15.806
+   337 ep: Train: L2 loss: 0.0274, PSNR: 15.617
+   338 ep: Train: L2 loss: 0.0281, PSNR: 15.514
+   339 ep: Train: L2 loss: 0.0270, PSNR: 15.694
+   340 ep: Train: L2 loss: 0.0281, PSNR: 15.514
+   340 ep Traj Err: translation: 0.214871, rotation: 39.49 deg, scale: 76.78
+   341 ep: Train: L2 loss: 0.0273, PSNR: 15.633
+   342 ep: Train: L2 loss: 0.0271, PSNR: 15.673
+   343 ep: Train: L2 loss: 0.0270, PSNR: 15.686
+   344 ep: Train: L2 loss: 0.0267, PSNR: 15.741
+   345 ep: Train: L2 loss: 0.0264, PSNR: 15.778
+   345 ep Traj Err: translation: 0.215900, rotation: 40.51 deg, scale: 77.52
+   346 ep: Train: L2 loss: 0.0264, PSNR: 15.779
+   347 ep: Train: L2 loss: 0.0271, PSNR: 15.671
+   348 ep: Train: L2 loss: 0.0257, PSNR: 15.897
+   349 ep: Train: L2 loss: 0.0264, PSNR: 15.779
+   350 ep: Train: L2 loss: 0.0263, PSNR: 15.804
+   350 ep Traj Err: translation: 0.215529, rotation: 40.13 deg, scale: 75.93
+   351 ep: Train: L2 loss: 0.0264, PSNR: 15.791
+   352 ep: Train: L2 loss: 0.0282, PSNR: 15.500
+   353 ep: Train: L2 loss: 0.0269, PSNR: 15.697
+   354 ep: Train: L2 loss: 0.0279, PSNR: 15.537
+   355 ep: Train: L2 loss: 0.0280, PSNR: 15.522
+   355 ep Traj Err: translation: 0.215524, rotation: 40.42 deg, scale: 74.98
+   356 ep: Train: L2 loss: 0.0277, PSNR: 15.577
+   357 ep: Train: L2 loss: 0.0265, PSNR: 15.770
+   358 ep: Train: L2 loss: 0.0261, PSNR: 15.840
+   359 ep: Train: L2 loss: 0.0262, PSNR: 15.812
+   360 ep: Train: L2 loss: 0.0263, PSNR: 15.802
+   360 ep Traj Err: translation: 0.215173, rotation: 39.98 deg, scale: 75.84
+   361 ep: Train: L2 loss: 0.0280, PSNR: 15.536
+   362 ep: Train: L2 loss: 0.0278, PSNR: 15.554
+   363 ep: Train: L2 loss: 0.0265, PSNR: 15.766
+   364 ep: Train: L2 loss: 0.0257, PSNR: 15.908
+   365 ep: Train: L2 loss: 0.0264, PSNR: 15.786
+   365 ep Traj Err: translation: 0.215354, rotation: 40.24 deg, scale: 75.89
+   366 ep: Train: L2 loss: 0.0248, PSNR: 16.047
+   367 ep: Train: L2 loss: 0.0249, PSNR: 16.035
+   368 ep: Train: L2 loss: 0.0266, PSNR: 15.745
+   369 ep: Train: L2 loss: 0.0260, PSNR: 15.848
+   370 ep: Train: L2 loss: 0.0266, PSNR: 15.744
+   370 ep Traj Err: translation: 0.215410, rotation: 40.24 deg, scale: 75.84
+   371 ep: Train: L2 loss: 0.0256, PSNR: 15.917
+   372 ep: Train: L2 loss: 0.0255, PSNR: 15.939
+   373 ep: Train: L2 loss: 0.0260, PSNR: 15.857
+   374 ep: Train: L2 loss: 0.0266, PSNR: 15.753
+   375 ep: Train: L2 loss: 0.0262, PSNR: 15.819
+   375 ep Traj Err: translation: 0.215499, rotation: 40.72 deg, scale: 75.35
+   376 ep: Train: L2 loss: 0.0264, PSNR: 15.778
+   377 ep: Train: L2 loss: 0.0261, PSNR: 15.841
+   378 ep: Train: L2 loss: 0.0262, PSNR: 15.814
+   379 ep: Train: L2 loss: 0.0266, PSNR: 15.750
+   380 ep: Train: L2 loss: 0.0251, PSNR: 16.004
+   380 ep Traj Err: translation: 0.215655, rotation: 40.22 deg, scale: 76.11
+   381 ep: Train: L2 loss: 0.0271, PSNR: 15.674
+   382 ep: Train: L2 loss: 0.0255, PSNR: 15.927
+   383 ep: Train: L2 loss: 0.0258, PSNR: 15.884
+   384 ep: Train: L2 loss: 0.0261, PSNR: 15.829
+   385 ep: Train: L2 loss: 0.0251, PSNR: 15.999
+   385 ep Traj Err: translation: 0.215873, rotation: 40.41 deg, scale: 75.57
+   386 ep: Train: L2 loss: 0.0272, PSNR: 15.660
+   387 ep: Train: L2 loss: 0.0261, PSNR: 15.841
+   388 ep: Train: L2 loss: 0.0258, PSNR: 15.876
+   389 ep: Train: L2 loss: 0.0265, PSNR: 15.776
+   390 ep: Train: L2 loss: 0.0263, PSNR: 15.798
+   390 ep Traj Err: translation: 0.216429, rotation: 40.46 deg, scale: 75.27
+   391 ep: Train: L2 loss: 0.0254, PSNR: 15.953
+   392 ep: Train: L2 loss: 0.0257, PSNR: 15.904
+   393 ep: Train: L2 loss: 0.0247, PSNR: 16.065
+   394 ep: Train: L2 loss: 0.0245, PSNR: 16.108
+   395 ep: Train: L2 loss: 0.0268, PSNR: 15.720
+   395 ep Traj Err: translation: 0.216264, rotation: 40.33 deg, scale: 74.76
+   396 ep: Train: L2 loss: 0.0259, PSNR: 15.873
+   397 ep: Train: L2 loss: 0.0246, PSNR: 16.087
+   398 ep: Train: L2 loss: 0.0255, PSNR: 15.933
+   399 ep: Train: L2 loss: 0.0259, PSNR: 15.859
+   400 ep: Train: L2 loss: 0.0274, PSNR: 15.628
+   400 ep Traj Err: translation: 0.216488, rotation: 40.58 deg, scale: 74.95
+   401 ep: Train: L2 loss: 0.0257, PSNR: 15.897
+   402 ep: Train: L2 loss: 0.0252, PSNR: 15.984
+   403 ep: Train: L2 loss: 0.0245, PSNR: 16.100
+   404 ep: Train: L2 loss: 0.0249, PSNR: 16.040
+   405 ep: Train: L2 loss: 0.0262, PSNR: 15.809
+   405 ep Traj Err: translation: 0.216354, rotation: 40.97 deg, scale: 74.82
+   406 ep: Train: L2 loss: 0.0252, PSNR: 15.991
+   407 ep: Train: L2 loss: 0.0246, PSNR: 16.098
+   408 ep: Train: L2 loss: 0.0254, PSNR: 15.958
+   409 ep: Train: L2 loss: 0.0239, PSNR: 16.214
+   410 ep: Train: L2 loss: 0.0247, PSNR: 16.069
+   410 ep Traj Err: translation: 0.216790, rotation: 41.42 deg, scale: 75.33
+   411 ep: Train: L2 loss: 0.0248, PSNR: 16.051
+   412 ep: Train: L2 loss: 0.0244, PSNR: 16.118
+   413 ep: Train: L2 loss: 0.0244, PSNR: 16.129
+   414 ep: Train: L2 loss: 0.0245, PSNR: 16.101
+   415 ep: Train: L2 loss: 0.0254, PSNR: 15.947
+   415 ep Traj Err: translation: 0.217133, rotation: 40.80 deg, scale: 75.62
+   416 ep: Train: L2 loss: 0.0253, PSNR: 15.965
+   417 ep: Train: L2 loss: 0.0248, PSNR: 16.061
+   418 ep: Train: L2 loss: 0.0256, PSNR: 15.923
+   419 ep: Train: L2 loss: 0.0254, PSNR: 15.944
+   420 ep: Train: L2 loss: 0.0251, PSNR: 15.996
+   420 ep Traj Err: translation: 0.216746, rotation: 41.13 deg, scale: 74.97
+   421 ep: Train: L2 loss: 0.0240, PSNR: 16.204
+   422 ep: Train: L2 loss: 0.0247, PSNR: 16.064
+   423 ep: Train: L2 loss: 0.0258, PSNR: 15.892
+   424 ep: Train: L2 loss: 0.0247, PSNR: 16.068
+   425 ep: Train: L2 loss: 0.0254, PSNR: 15.945
+   425 ep Traj Err: translation: 0.217262, rotation: 40.94 deg, scale: 74.97
+   426 ep: Train: L2 loss: 0.0250, PSNR: 16.013
+   427 ep: Train: L2 loss: 0.0246, PSNR: 16.091
+   428 ep: Train: L2 loss: 0.0243, PSNR: 16.143
+   429 ep: Train: L2 loss: 0.0260, PSNR: 15.857
+   430 ep: Train: L2 loss: 0.0251, PSNR: 16.011
+   430 ep Traj Err: translation: 0.217319, rotation: 41.24 deg, scale: 74.95
+   431 ep: Train: L2 loss: 0.0240, PSNR: 16.207
+   432 ep: Train: L2 loss: 0.0234, PSNR: 16.313
+   433 ep: Train: L2 loss: 0.0244, PSNR: 16.127
+   434 ep: Train: L2 loss: 0.0244, PSNR: 16.120
+   435 ep: Train: L2 loss: 0.0248, PSNR: 16.051
+   435 ep Traj Err: translation: 0.217552, rotation: 41.03 deg, scale: 74.25
+   436 ep: Train: L2 loss: 0.0246, PSNR: 16.094
+   437 ep: Train: L2 loss: 0.0244, PSNR: 16.126
+   438 ep: Train: L2 loss: 0.0253, PSNR: 15.964
+   439 ep: Train: L2 loss: 0.0247, PSNR: 16.070
+   440 ep: Train: L2 loss: 0.0255, PSNR: 15.933
+   440 ep Traj Err: translation: 0.217747, rotation: 41.28 deg, scale: 74.13
+   441 ep: Train: L2 loss: 0.0247, PSNR: 16.081
+   442 ep: Train: L2 loss: 0.0249, PSNR: 16.038
+   443 ep: Train: L2 loss: 0.0236, PSNR: 16.268
+   444 ep: Train: L2 loss: 0.0245, PSNR: 16.106
+   445 ep: Train: L2 loss: 0.0233, PSNR: 16.331
+   445 ep Traj Err: translation: 0.218096, rotation: 41.45 deg, scale: 74.15
+   446 ep: Train: L2 loss: 0.0256, PSNR: 15.921
+   447 ep: Train: L2 loss: 0.0239, PSNR: 16.207
+   448 ep: Train: L2 loss: 0.0235, PSNR: 16.285
+   449 ep: Train: L2 loss: 0.0239, PSNR: 16.214
+   450 ep: Train: L2 loss: 0.0244, PSNR: 16.129
+   450 ep Traj Err: translation: 0.218366, rotation: 41.65 deg, scale: 74.60
+   451 ep: Train: L2 loss: 0.0245, PSNR: 16.112
+   452 ep: Train: L2 loss: 0.0249, PSNR: 16.033
+   453 ep: Train: L2 loss: 0.0235, PSNR: 16.290
+   454 ep: Train: L2 loss: 0.0239, PSNR: 16.208
+   455 ep: Train: L2 loss: 0.0239, PSNR: 16.219
+   455 ep Traj Err: translation: 0.218467, rotation: 41.59 deg, scale: 74.42
+   456 ep: Train: L2 loss: 0.0250, PSNR: 16.018
+   457 ep: Train: L2 loss: 0.0247, PSNR: 16.081
+   458 ep: Train: L2 loss: 0.0261, PSNR: 15.838
+   459 ep: Train: L2 loss: 0.0244, PSNR: 16.128
+   460 ep: Train: L2 loss: 0.0245, PSNR: 16.112
+   460 ep Traj Err: translation: 0.218473, rotation: 41.62 deg, scale: 74.76
+   461 ep: Train: L2 loss: 0.0243, PSNR: 16.149
+   462 ep: Train: L2 loss: 0.0247, PSNR: 16.067
+   463 ep: Train: L2 loss: 0.0243, PSNR: 16.149
+   464 ep: Train: L2 loss: 0.0242, PSNR: 16.164
+   465 ep: Train: L2 loss: 0.0242, PSNR: 16.157
+   465 ep Traj Err: translation: 0.218621, rotation: 41.77 deg, scale: 74.69
