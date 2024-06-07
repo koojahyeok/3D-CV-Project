@@ -2083,3 +2083,15 @@ Namespace(epoch=3000, eval_img_interval=100, eval_cam_interval=5, gpu_id=0, mult
   1735 ep: Train: L2 loss: 0.0095, PSNR: 20.219
   1735 ep Traj Err: translation: 0.255428, rotation: 45.80 deg, scale: 50.26
   1736 ep: Train: L2 loss: 0.0093, PSNR: 20.322
+  1737 ep: Train: L2 loss: 0.0093, PSNR: 20.319
+  1738 ep: Train: L2 loss: 0.0093, PSNR: 20.306
+  1739 ep: Train: L2 loss: 0.0092, PSNR: 20.352
+  1740 ep: Train: L2 loss: 0.0099, PSNR: 20.053
+  1740 ep Traj Err: translation: 0.255445, rotation: 45.87 deg, scale: 50.28
+  1741 ep: Train: L2 loss: 0.0093, PSNR: 20.331
+  1742 ep: Train: L2 loss: 0.0092, PSNR: 20.359
+  1743 ep: Train: L2 loss: 0.0091, PSNR: 20.388
+  1744 ep: Train: L2 loss: 0.0096, PSNR: 20.177
+  1745 ep: Train: L2 loss: 0.0095, PSNR: 20.207
+  1745 ep Traj Err: translation: 0.255437, rotation: 45.91 deg, scale: 50.30
+  1746 ep: Train: L2 loss: 0.0097, PSNR: 20.119
